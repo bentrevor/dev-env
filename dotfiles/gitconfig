@@ -1,0 +1,21 @@
+[user]
+  name = Ben Trevor
+  email = benjamin.trevor@gmail.com
+
+[core]
+  excludesfile = ~/.gitignore_global
+
+[push]
+  default = matching
+
+[color]
+  status = auto
+  branch = auto
+  interactive = auto
+  diff = auto
+  grep = auto
+
+[alias]
+  st = status
+  co = checkout
+  br = branch

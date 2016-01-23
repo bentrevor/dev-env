@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+
+dotfiles=(
+    'bundlerrc'
+    'gemrc'
+    'gitconfig'
+    'gitignore_global'
+    'pryrc'
+    'ruby-version'
+)
+
+timestamp=$(date +"%Y%m%d%H%M%S")
+username=$(whoami)
+env_dir="$HOME/dev-env"
+bundler_path="$HOME/.bundle"
+
+# platform='unknown'
+# [[ $(uname) == 'Linux' ]]  && platform='linux'
+# [[ $(uname) == 'Darwin' ]] && platform='osx'
+
+red=1; green=2; yellow=3; blue=4; magenta=5; cyan=6; white=7; black=8
+
+function main() {
+    parse_args $@
+
+    if [[ $only_zsh = true ]]; then
+        install_zsh
+    elif [[ $only_vim = true]]; then
+        install_vim
+    elif [[ $only_dotfiles = true]]; then
+        link_dotfiles
+    else
+        install_zsh
+        install_vim
+        link_dotfiles
+    fi
+
+    printf '\n\n ~~~ finished configuring shell, you should restart now ~~~ \n\n'
+}
+
+function parse_args() {
+    for opt in "$@"
+    do
+        case "$opt" in
+            -v | --verbose)
+                verbose_output=true
+                ;;
+
+            --dry-run)
+                dry_run=true
+                ;;
+
+            -u=* | --username=*)
+                username="${opt#*=}"
+                ;;
+
+            --zsh)
+                only_zsh=true
+                ;;
+
+            --vim)
+                only_vim=true
+                ;;
+
+            --dotfiles)
+                only_dotfiles=true
+                ;;
+
+            *)
+                printf "unknown argument:\t$opt\n"
+                printf "usage:\n\t-v / --verbose\t\t\tdebugging output\n"
+                printf "\t--dry-run\t\t\tdon't actually make changes\n"
+                printf "\t--username=\t\t\tset username\n"
+                exit 1
+                ;;
+        esac
+    done
+}
+
+function install_zsh() {
+    cp -rf "$env_dir/zsh" ~/.zsh
+    cd ~/.zsh
+    ./bootstrap
+}
+
+function install_vim() {
+    cp -rf "$env_dir/vim" ~/.vim
+    cd ~/.vim
+    ./bootstrap
+}
+
+## helper functions
+
+function change_color() {
+    echo "$(tput setaf $1)$2$(tput sgr0)"
+}
+
+# function is_osx() { [[ $platform == 'osx' ]]; }
+function is_verbose() { [[ "$verbose_output" = true ]]; }
+function is_wet() { [[ "$dry_run" != true ]]; }
+
+function backup_for() {
+    echo "$1_backup_$timestamp"
+}
+
+function path_for() {
+    if [[ $1 == 'bundlerrc' ]]; then
+        echo "$bundler_path/config"
+    else
+        echo "$HOME/.$1"
+    fi
+}
+
+function make_backup() {
+    dotfile=$1
+    backup_file=$(backup_for $dotfile)
+
+    if [[ $dotfile == "$bundler_path/config" ]] && [[ ! -e "$bundler_path" ]]; then
+        mkdir $bundler_path
+        chown -R $username:$username $bundler_path
+    fi
+
+    if [[ -e $dotfile ]]; then
+        if is_wet; then
+            cat $dotfile > $backup_file
+            rm $dotfile
+            chown -R $username:$username $backup_file
+        fi
+
+        if is_verbose; then
+            echo "created backup file $(change_color $green $backup_file)"
+        fi
+    fi
+}
+
+
+function link_dotfiles() {
+    for dotfile in "${dotfiles[@]}"
+    do
+        target_path="$env_dir/dotfiles/$dotfile"
+        link_path=$(path_for $dotfile)
+
+        if is_wet; then
+            make_backup $link_path
+            ln -s $target_path $link_path
+            chown -R $username:$username $link_path
+        fi
+
+        if is_verbose; then
+            green_link=$(change_color $green $link_path)
+            green_target=$(change_color $green $target_path)
+            echo "linked $(change_color $green $link_path) to $(change_color $green $target_path)\n"
+        fi
+    done
+}
+
+main $@
