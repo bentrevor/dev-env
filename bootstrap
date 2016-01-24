@@ -1,48 +1,43 @@
 #!/usr/bin/env bash
 
+function main() {
+    parse_args $@
+    set_platform_and_username
+
+    [[ $zsh_flag      = true ]] && configure_zsh
+    [[ $vim_flag      = true ]] && configure_vim
+    [[ $dotfiles_flag = true ]] && configure_dotfiles
+
+    printf '\n\n ~~~ finished configuring shell, you might need to restart ~~~ \n\n'
+}
+
 dotfiles=(
-    'bundlerrc'
     'gemrc'
     'gitconfig'
     'gitignore_global'
     'pryrc'
+    'rspec'
     'ruby-version'
+    'tmux.conf'
 )
 
-timestamp=$(date +"%Y%m%d%H%M%S")
-username=$(whoami)
+platform='unknown'
+
 env_dir="$HOME/dev-env"
-bundler_path="$HOME/.bundle"
+bundler_dir="$HOME/.bundle"
+zsh_dir="$HOME/.zsh"
+vim_dir="$HOME/.vim"
 
-# platform='unknown'
-# [[ $(uname) == 'Linux' ]]  && platform='linux'
-# [[ $(uname) == 'Darwin' ]] && platform='osx'
-
-red=1; green=2; yellow=3; blue=4; magenta=5; cyan=6; white=7; black=8
-
-function main() {
-    parse_args $@
-
-    if [[ $only_zsh = true ]]; then
-        install_zsh
-    elif [[ $only_vim = true]]; then
-        install_vim
-    elif [[ $only_dotfiles = true]]; then
-        link_dotfiles
-    else
-        install_zsh
-        install_vim
-        link_dotfiles
-    fi
-
-    printf '\n\n ~~~ finished configuring shell, you should restart now ~~~ \n\n'
-}
+bundler_flag=false # TODO
+zsh_flag=false
+vim_flag=false
+dotfiles_flag=false
 
 function parse_args() {
     for opt in "$@"
     do
         case "$opt" in
-            -v | --verbose)
+            --verbose)
                 verbose_output=true
                 ;;
 
@@ -50,108 +45,162 @@ function parse_args() {
                 dry_run=true
                 ;;
 
-            -u=* | --username=*)
-                username="${opt#*=}"
-                ;;
-
             --zsh)
-                only_zsh=true
+                zsh_flag=true
                 ;;
 
             --vim)
-                only_vim=true
+                vim_flag=true
+                ;;
+
+            --bundler)
+                bundler_flag=false # TODO
                 ;;
 
             --dotfiles)
-                only_dotfiles=true
+                dotfiles_flag=true
                 ;;
 
             *)
-                printf "unknown argument:\t$opt\n"
-                printf "usage:\n\t-v / --verbose\t\t\tdebugging output\n"
+                printf "unknown argument:\t$(change_color $red $opt)\n\n"
+                printf "usage:\n\t--verbose\t\t\tdebugging output\n"
                 printf "\t--dry-run\t\t\tdon't actually make changes\n"
-                printf "\t--username=\t\t\tset username\n"
+                printf "\t--zsh\t\t\t\tconfigure zsh\n"
+                printf "\t--vim\t\t\t\tconfigure vim\n"
+                printf "\t--dotfiles\t\t\tconfigure dotfiles\n"
                 exit 1
                 ;;
         esac
     done
 }
 
-function install_zsh() {
-    cp -rf "$env_dir/zsh" ~/.zsh
-    cd ~/.zsh
-    ./bootstrap
+function set_platform_and_username() {
+    case "$(uname)" in
+        "Darwin")
+            platform="osx"
+            username="ben"
+            groupname="staff"
+            ;;
+
+        "Linux")
+            platform="ubuntu"
+            username="vagrant"
+            groupname="vagrant"
+            ;;
+
+        *)
+            printf "unknown platform:\t$(change_color $red $uname)\n\n"
+            exit 1
+            ;;
+    esac
 }
 
-function install_vim() {
-    cp -rf "$env_dir/vim" ~/.vim
-    cd ~/.vim
-    ./bootstrap
+function configure_zsh() {
+    if wet_flagged; then
+        if [[ -e "$zsh_dir" ]]; then
+            echo "configure_zsh failed: $(change_color $red $zsh_dir) already exists"
+            exit 1
+        fi
+
+        if on_ubuntu_vm; then
+            apt-get update
+            apt-get install zsh -y
+        fi
+
+        cp -rf "$env_dir/zsh" $zsh_dir
+        ./$zsh_dir/bootstrap
+    fi
+
+    if verbose_flagged; then
+        if on_ubuntu_vm; then
+            echo 'installed zsh'
+        fi
+
+        echo 'ran zsh bootstrap script'
+    fi
+}
+
+function configure_vim() {
+    # both osx and ubuntu have a pretty new version in /usr/bin so I don't need to install it, just
+    # run the setup script
+    if wet_flagged; then
+        if [[ -e "$vim_dir" ]]; then
+            echo "configure_vim failed: $(change_color $red $vim_dir) already exists"
+            exit 1
+        fi
+
+        cp -rf "$env_dir/vim" $vim_dir
+        ./$vim_dir/bootstrap
+    fi
+
+    if verbose_flagged; then
+        echo 'ran vim bootstrap script'
+    fi
+}
+
+function configure_dotfiles() {
+    for dotfile in "${dotfiles[@]}"
+    do
+        local dotfile_path="${HOME}/.${dotfile}"
+        local dev_env_dotfile_path="${env_dir}/dotfiles/${dotfile}"
+
+        if wet_flagged; then
+            backup_and_rm $dotfile $dotfile_path
+            link_dotfile $dev_env_dotfile_path $dotfile_path
+        fi
+
+        if verbose_flagged; then
+            echo "linked $(change_color $green $dotfile_path) to $(change_color $green $dev_env_dotfile_path)"
+        fi
+    done
+}
+
+function backup_and_rm() {
+    local dotfile=$1
+    local dotfile_path=$2
+
+    make_backup $dotfile $dotfile_path && \
+        rm $dotfile_path
+}
+
+function link_dotfile() {
+    local dev_env_dotfile_path=$1
+    local dotfile_path=$2
+
+    ln -s $dev_env_dotfile_path $dotfile_path
+    chown -R $username:$groupname $dotfile_path
+}
+
+function make_backup() {
+    local dotfile=$1
+    local dotfile_path=$2
+    local timestamp=$(date +"%Y%m%d%H%M%S")
+
+    local backup_file="${env_dir}/backups/${dotfile}_${timestamp}"
+
+    if [[ -e $dotfile_path ]]; then
+        cat $dotfile_path > $backup_file
+        chown -R $username:$groupname $backup_file
+
+        if verbose_flagged; then
+            echo "created backup file $(change_color $green $backup_file)"
+        fi
+    else
+        if verbose_flagged; then
+            echo "no existing dotfile: $(change_color $yellow $dotfile_path)"
+        fi
+    fi
 }
 
 ## helper functions
 
+red=1; green=2; yellow=3; blue=4; magenta=5; cyan=6; white=7; black=8
 function change_color() {
     echo "$(tput setaf $1)$2$(tput sgr0)"
 }
 
-# function is_osx() { [[ $platform == 'osx' ]]; }
-function is_verbose() { [[ "$verbose_output" = true ]]; }
-function is_wet() { [[ "$dry_run" != true ]]; }
-
-function backup_for() {
-    echo "$1_backup_$timestamp"
-}
-
-function path_for() {
-    if [[ $1 == 'bundlerrc' ]]; then
-        echo "$bundler_path/config"
-    else
-        echo "$HOME/.$1"
-    fi
-}
-
-function make_backup() {
-    dotfile=$1
-    backup_file=$(backup_for $dotfile)
-
-    if [[ $dotfile == "$bundler_path/config" ]] && [[ ! -e "$bundler_path" ]]; then
-        mkdir $bundler_path
-        chown -R $username:$username $bundler_path
-    fi
-
-    if [[ -e $dotfile ]]; then
-        if is_wet; then
-            cat $dotfile > $backup_file
-            rm $dotfile
-            chown -R $username:$username $backup_file
-        fi
-
-        if is_verbose; then
-            echo "created backup file $(change_color $green $backup_file)"
-        fi
-    fi
-}
-
-
-function link_dotfiles() {
-    for dotfile in "${dotfiles[@]}"
-    do
-        target_path="$env_dir/dotfiles/$dotfile"
-        link_path=$(path_for $dotfile)
-
-        if is_wet; then
-            make_backup $link_path
-            ln -s $target_path $link_path
-            chown -R $username:$username $link_path
-        fi
-
-        if is_verbose; then
-            green_link=$(change_color $green $link_path)
-            green_target=$(change_color $green $target_path)
-            echo "linked $(change_color $green $link_path) to $(change_color $green $target_path)\n"
-        fi
-    done
-}
+function on_ubuntu_vm() { [[ $platform == 'ubuntu' ]]; }
+function verbose_flagged() { [[ "$verbose_output" = true ]]; }
+function wet_flagged() { [[ "$dry_run" != true ]]; }
 
 main $@
