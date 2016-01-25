@@ -62,7 +62,7 @@ function parse_args() {
                 ;;
 
             *)
-                printf "unknown argument:\t$(change_color $red $opt)\n\n"
+                printf "unknown argument:\t$(red $opt)\n\n"
                 printf "usage:\n\t--verbose\t\t\tdebugging output\n"
                 printf "\t--dry-run\t\t\tdon't actually make changes\n"
                 printf "\t--zsh\t\t\t\tconfigure zsh\n"
@@ -89,7 +89,7 @@ function set_platform_and_username() {
             ;;
 
         *)
-            printf "unknown platform:\t$(change_color $red $uname)\n\n"
+            printf "unknown platform:\t$(red $uname)\n\n"
             exit 1
             ;;
     esac
@@ -98,7 +98,7 @@ function set_platform_and_username() {
 function configure_zsh() {
     if wet_flagged; then
         if [[ -e "$zsh_dir" ]]; then
-            echo "configure_zsh failed: $(change_color $red $zsh_dir) already exists"
+            echo "configure_zsh failed: $(red $zsh_dir) already exists"
             exit 1
         fi
 
@@ -126,7 +126,7 @@ function configure_vim() {
     # run the setup script
     if wet_flagged; then
         if [[ -e "$vim_dir" ]]; then
-            echo "configure_vim failed: $(change_color $red $vim_dir) already exists"
+            echo "configure_vim failed: $(red $vim_dir) already exists"
             exit 1
         fi
 
@@ -149,30 +149,10 @@ function configure_dotfiles() {
             backup_and_rm $dotfile $dotfile_path
             link_dotfile $dev_env_dotfile_path $dotfile_path
         fi
-
-        if verbose_flagged; then
-            echo "linked $(change_color $green $dotfile_path) to $(change_color $green $dev_env_dotfile_path)"
-        fi
     done
 }
 
 function backup_and_rm() {
-    local dotfile=$1
-    local dotfile_path=$2
-
-    make_backup $dotfile $dotfile_path && \
-        rm $dotfile_path
-}
-
-function link_dotfile() {
-    local dev_env_dotfile_path=$1
-    local dotfile_path=$2
-
-    ln -s $dev_env_dotfile_path $dotfile_path
-    chown -R $username:$groupname $dotfile_path
-}
-
-function make_backup() {
     local dotfile=$1
     local dotfile_path=$2
     local timestamp=$(date +"%Y%m%d%H%M%S")
@@ -184,21 +164,42 @@ function make_backup() {
         chown -R $username:$groupname $backup_file
 
         if verbose_flagged; then
-            echo "created backup file $(change_color $green $backup_file)"
+            echo "created backup file $(green $backup_file)"
         fi
     else
         if verbose_flagged; then
-            echo "no existing dotfile: $(change_color $yellow $dotfile_path)"
+            echo "no existing dotfile: $(yellow $dotfile_path)"
         fi
+    fi
+
+    if [[ -e $backup_file ]]; then
+        rm $dotfile_path
+
+        if verbose_flagged; then
+            echo "removed old dotfile: $(red $dotfile_path)"
+        fi
+    fi
+}
+
+function link_dotfile() {
+    local dev_env_dotfile_path=$1
+    local dotfile_path=$2
+
+    ln -s $dev_env_dotfile_path $dotfile_path
+    chown -R $username:$groupname $dotfile_path
+
+    if verbose_flagged; then
+        echo "linked $(green $dotfile_path) to $(green $dev_env_dotfile_path)"
     fi
 }
 
 ## helper functions
 
-red=1; green=2; yellow=3; blue=4; magenta=5; cyan=6; white=7; black=8
-function change_color() {
-    echo "$(tput setaf $1)$2$(tput sgr0)"
-}
+red_id=1; green_id=2; yellow_id=3; blue_id=4; magenta_id=5; cyan_id=6; white_id=7; black_id=8
+function change_color() { echo "$(tput setaf $1)$2$(tput sgr0)"; }
+function red() { echo "$(change_color $red_id $1)"; }
+function yellow() { echo "$(change_color $yellow_id $1)"; }
+function green() { echo "$(change_color $green_id $1)"; }
 
 function on_ubuntu_vm() { [[ $platform == 'ubuntu' ]]; }
 function verbose_flagged() { [[ "$verbose_output" = true ]]; }
