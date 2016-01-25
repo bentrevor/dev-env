@@ -72,6 +72,7 @@ function dont_log_that() {
     export COMMAND_LOGGING=$ocl
 }
 
+touch ~/.full_history
 function log_commands() {
     if [[ $(cat ~/.full_history | wc -l) -gt 3000 ]]; then
         echo 'logging ~/.full_history'

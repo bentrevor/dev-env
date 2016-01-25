@@ -96,6 +96,8 @@ function set_platform_and_username() {
     bundler_dir="$home_dir/.bundle"
     zsh_dir="$home_dir/.zsh"
     vim_dir="$home_dir/.vim"
+
+    chown -R $username:$groupname $env_dir
 }
 
 function configure_zsh() {
@@ -107,19 +109,22 @@ function configure_zsh() {
 
         if on_ubuntu_vm; then
             apt-get update
-            apt-get install zsh tree -y
-            # tree on OSX is installed with Homebrew
+            apt-get install zsh tree silversearcher-ag -y
+            # Homebrew stuff on OSX might just have to be done manually
         fi
 
         cp -rf "$env_dir/zsh" $zsh_dir
-        ln -s $zsh_dir/zshrc ~/.zshrc
-        ln -s $zsh_dir/zshenv ~/.zshenv
+        chown -R $username:$groupname $zsh_dir
+
+        ln -s $zsh_dir/zshrc $home_dir/.zshrc
+        ln -s $zsh_dir/zshenv $home_dir/.zshenv
+
         chsh -s $(which zsh) $username
     fi
 
     if verbose_flagged; then
         if on_ubuntu_vm; then
-            echo 'installed zsh and tree'
+            echo 'installed: zsh, tree, ag'
         fi
 
         echo 'ran zsh bootstrap script'
@@ -136,7 +141,8 @@ function configure_vim() {
         fi
 
         cp -rf "$env_dir/vim" $vim_dir
-        ln -s $vim_dir/vimrc ~/.vimrc
+        chown -R $username:$groupname $vim_dir
+        ln -s $vim_dir/vimrc $home_dir/.vimrc
     fi
 
     if verbose_flagged; then
