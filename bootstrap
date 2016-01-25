@@ -23,11 +23,6 @@ dotfiles=(
 
 platform='unknown'
 
-env_dir="$HOME/dev-env"
-bundler_dir="$HOME/.bundle"
-zsh_dir="$HOME/.zsh"
-vim_dir="$HOME/.vim"
-
 bundler_flag=false # TODO
 zsh_flag=false
 vim_flag=false
@@ -80,12 +75,15 @@ function set_platform_and_username() {
             platform="osx"
             username="ben"
             groupname="staff"
+            home_dir="/Users/$username"
             ;;
 
         "Linux")
             platform="ubuntu"
             username="vagrant"
             groupname="vagrant"
+            # in vagrant provisioners, $HOME is /root
+            home_dir="/home/$username"
             ;;
 
         *)
@@ -93,6 +91,11 @@ function set_platform_and_username() {
             exit 1
             ;;
     esac
+
+    env_dir="$home_dir/dev-env"
+    bundler_dir="$home_dir/.bundle"
+    zsh_dir="$home_dir/.zsh"
+    vim_dir="$home_dir/.vim"
 }
 
 function configure_zsh() {
@@ -144,7 +147,7 @@ function configure_vim() {
 function configure_dotfiles() {
     for dotfile in "${dotfiles[@]}"
     do
-        local dotfile_path="${HOME}/.${dotfile}"
+        local dotfile_path="${home_dir}/.${dotfile}"
         local dev_env_dotfile_path="${env_dir}/dotfiles/${dotfile}"
 
         if wet_flagged; then
