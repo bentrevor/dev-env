@@ -104,17 +104,19 @@ function configure_zsh() {
 
         if on_ubuntu_vm; then
             apt-get update
-            apt-get install zsh -y
+            apt-get install zsh tree -y
+            # tree on OSX is installed with Homebrew
         fi
 
         cp -rf "$env_dir/zsh" $zsh_dir
         ln -s $zsh_dir/zshrc ~/.zshrc
         ln -s $zsh_dir/zshenv ~/.zshenv
+        chsh -s $(which zsh) $username
     fi
 
     if verbose_flagged; then
         if on_ubuntu_vm; then
-            echo 'installed zsh'
+            echo 'installed zsh and tree'
         fi
 
         echo 'ran zsh bootstrap script'
