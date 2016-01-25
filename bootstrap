@@ -108,7 +108,8 @@ function configure_zsh() {
         fi
 
         cp -rf "$env_dir/zsh" $zsh_dir
-        ./$zsh_dir/bootstrap
+        ln -s $zsh_dir/zshrc ~/.zshrc
+        ln -s $zsh_dir/zshenv ~/.zshenv
     fi
 
     if verbose_flagged; then
@@ -130,11 +131,11 @@ function configure_vim() {
         fi
 
         cp -rf "$env_dir/vim" $vim_dir
-        ./$vim_dir/bootstrap
+        ln -s $vim_dir/vimrc ~/.vimrc
     fi
 
     if verbose_flagged; then
-        echo 'ran vim bootstrap script'
+        echo 'linked vimrc'
     fi
 }
 
