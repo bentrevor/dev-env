@@ -134,3 +134,9 @@ function chruby_auto() {
         unset RUBY_AUTO_VERSION
     fi
 }
+
+function chpwd() {
+    if on_osx; then
+        [[ $CHRUBY_AUTOSWITCH = true ]] && chruby_auto
+    fi
+}
