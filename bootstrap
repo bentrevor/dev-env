@@ -113,11 +113,10 @@ function configure_zsh() {
             # Homebrew stuff on OSX might just have to be done manually
         fi
 
-        cp -rf "$env_dir/zsh" $zsh_dir
-        chown -R $username:$groupname $zsh_dir
+        nonroot_symlink $env_dir/zsh $zsh_dir
 
-        ln -s $zsh_dir/zshrc $home_dir/.zshrc
-        ln -s $zsh_dir/zshenv $home_dir/.zshenv
+        nonroot_symlink $zsh_dir/zshrc $home_dir/.zshrc
+        nonroot_symlink $zsh_dir/zshenv $home_dir/.zshenv
 
         chsh -s $(which zsh) $username
     fi
@@ -131,6 +130,14 @@ function configure_zsh() {
     fi
 }
 
+function nonroot_symlink() {
+    local target_path=$1
+    local link_path=$2
+
+    ln -s $target_path $link_path
+    chown -R $username:$groupname $link_path
+}
+
 function configure_vim() {
     # both osx and ubuntu have a pretty new version in /usr/bin so I don't need to install it, just
     # run the setup script
@@ -140,9 +147,8 @@ function configure_vim() {
             exit 1
         fi
 
-        cp -rf "$env_dir/vim" $vim_dir
-        chown -R $username:$groupname $vim_dir
-        ln -s $vim_dir/vimrc $home_dir/.vimrc
+        nonroot_symlink $env_dir/vim $vim_dir
+        nonroot_symlink $vim_dir/vimrc $home_dir/.vimrc
     fi
 
     if verbose_flagged; then
