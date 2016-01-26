@@ -16,7 +16,6 @@ zstyle ':completion:*:default' menu 'select=0'      # menu-style
 export CLICOLOR=1
 autoload colors
 colors
-[[ -d ~/junk_drawer ]] && source ~/junk_drawer/scripts/color_functions.sh # Color helper functions
 
 ### History ###
 export HISTFILE=$HOME/.zsh_history
@@ -49,9 +48,6 @@ export EDITOR=vim
 set -o emacs
 
 source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source $HOME/.zsh/scripts/aliases.zsh
-source $HOME/.zsh/scripts/prompt.zsh
-
 
 ### OS-specific settings ###
 if on_linux; then
@@ -67,47 +63,6 @@ else
     _Z_EXCLUDE_DIRS=("$HOME/.gem" "$HOME/.rubies" "$HOME/Library" "$HOME/work/enova/8b/gems/portfolio_client" "$HOME/work/enova/8b/gems/identity_client")
     # source ~/.zsh/export_homebrew_github_api_token.sh
 fi
-
-
-### Helpers ###
-function show-path()        { echo $PATH | tr ':' '\n' }
-
-# add WTFPL license
-function wtfpl() {
-    if [ -f COPYING ]; then
-        echo 'COPYING file already exists'
-    else
-        cat > COPYING <<- EOM
-        DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-                    Version 2, December 2004
-
- Copyright (C) 2015 Ben Trevor <benjamin.trevor@gmail.com>
-
- Everyone is permitted to copy and distribute verbatim or modified
- copies of this license document, and changing it is allowed as long
- as the name is changed.
-
-            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
-   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-
-  0. You just DO WHAT THE FUCK YOU WANT TO.
-EOM
-    fi
-}
-
-function rename_box() {
-    OLD_BOX_NAME=$1
-    PROVIDER=$2
-    NEW_BOX_NAME=$3
-
-    echo "repackaging $OLD_BOX_NAME..."
-    vagrant box repackage $OLD_BOX_NAME $PROVIDER
-    echo "adding $NEW_BOX_NAME..."
-    vagrant box add $NEW_BOX_NAME package.box
-    rm package.box
-    vagrant box remove $OLD_BOX_NAME
-    echo 'Success!'
-}
 
 ### set up session ###
 function global_bins()  { echo '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin' }
