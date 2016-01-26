@@ -1,5 +1,12 @@
 
-### Prompt ###
+if on_linux; then
+    prompt_branch_color='magenta'
+    prompt_path_color='red'
+else
+    prompt_branch_color='blue'
+    prompt_path_color='cyan'
+fi
+
 # first line of `git status` is either `On branch xxx` or `HEAD detached at xxx`
 function nth_word_of_gs()       { git status | head -1 | awk "{print \$$1}" }
 function detached_head()        { [[ $(nth_word_of_gs 2) == 'detached' ]] }

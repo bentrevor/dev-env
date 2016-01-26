@@ -1,4 +1,9 @@
-### Aliases ###
+if on_linux; then
+    alias ls='ls --color'
+else
+    alias ls='ls -G'
+fi
+
 alias l='ls -lhpG'
 alias lsa='ls -lhpA'
 

@@ -49,20 +49,12 @@ set -o emacs
 
 source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-### OS-specific settings ###
-if on_linux; then
-    prompt_branch_color='blue'
-    prompt_path_color='magenta'
-    alias ls='ls --color'
-else
-    prompt_branch_color='cyan'
-    prompt_path_color='red'
-    alias ls='ls -G'
 
+if on_osx; then
     source $(brew --prefix)/etc/profile.d/z.sh
-    _Z_EXCLUDE_DIRS=("$HOME/.gem" "$HOME/.rubies" "$HOME/Library" "$HOME/work/enova/8b/gems/portfolio_client" "$HOME/work/enova/8b/gems/identity_client")
-    # source ~/.zsh/export_homebrew_github_api_token.sh
+    _Z_EXCLUDE_DIRS=("$HOME/.gem" "$HOME/.rubies" "$HOME/Library")
 fi
+
 
 ### set up session ###
 function global_bins()  { echo '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin' }
