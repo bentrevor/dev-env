@@ -16,7 +16,7 @@ alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'
 alias grip='grep -i --color=auto'
 
-alias t='tree -C --dirsfirst -I "coverage|build|dist" '
+alias t='tree -C --dirsfirst -I "coverage|build|dist|*srv" '
 alias t2='t -L 2'
 
 # make aliases work with "sudo"

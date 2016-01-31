@@ -1,10 +1,10 @@
 
 if on_linux; then
-    prompt_branch_color='magenta'
-    prompt_path_color='red'
+    prompt_branch_color='cyan'
+    prompt_path_color='white'
 else
-    prompt_branch_color='blue'
-    prompt_path_color='cyan'
+    prompt_branch_color='yellow'
+    prompt_path_color='magenta'
 fi
 
 # first line of `git status` is either `On branch xxx` or `HEAD detached at xxx`
@@ -21,9 +21,10 @@ function current_branch() {
         else
             branch=$(attached_head_status)
         fi
-        echo "[%{$fg_bold[$prompt_branch_color]%}$branch%{$reset_color%}] "
+        echo "[%{$fg_bold[$prompt_branch_color]%}$branch%{$reset_color%}]"
     else
         echo ""
     fi
 }
+
 export PS1='$(current_branch)$(current_dir) '
