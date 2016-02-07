@@ -1,5 +1,7 @@
 if on_linux; then
     alias ls='ls --color'
+    # apt-get has an old version that doesn't use -S (smart case) by default
+    alias ag='ag -S'
 else
     alias ls='ls -G'
 fi
