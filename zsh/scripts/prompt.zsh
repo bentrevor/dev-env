@@ -1,10 +1,10 @@
 
 if on_linux; then
     prompt_branch_color='cyan'
-    prompt_path_color='white'
+    prompt_path_color='black'
 else
     prompt_branch_color='yellow'
-    prompt_path_color='magenta'
+    prompt_path_color='red'
 fi
 
 # first line of `git status` is either `On branch xxx` or `HEAD detached at xxx`

@@ -1,8 +1,7 @@
-# chruby.sh and auto.sh with more verbose output
-# (from https://github.com/postmodern/chruby)
-CHRUBY_VERSION="0.3.8"
-
+# chruby.sh
+CHRUBY_VERSION="0.3.9"
 RUBIES=()
+
 for dir in "$PREFIX/opt/rubies" "$HOME/.rubies"; do
     [[ -d "$dir" && -n "$(ls -A "$dir")" ]] && RUBIES+=("$dir"/*)
 done
@@ -12,26 +11,26 @@ function chruby_reset() {
     [[ -z "$RUBY_ROOT" ]] && return
 
     PATH=":$PATH:"; PATH="${PATH//:$RUBY_ROOT\/bin:/:}"
+    [[ -n "$GEM_ROOT" ]] && PATH="${PATH//:$GEM_ROOT\/bin:/:}"
 
-    if (( $UID != 0 )); then
+    if (( UID != 0 )); then
         [[ -n "$GEM_HOME" ]] && PATH="${PATH//:$GEM_HOME\/bin:/:}"
-        [[ -n "$GEM_ROOT" ]] && PATH="${PATH//:$GEM_ROOT\/bin:/:}"
 
         GEM_PATH=":$GEM_PATH:"
         [[ -n "$GEM_HOME" ]] && GEM_PATH="${GEM_PATH//:$GEM_HOME:/:}"
         [[ -n "$GEM_ROOT" ]] && GEM_PATH="${GEM_PATH//:$GEM_ROOT:/:}"
         GEM_PATH="${GEM_PATH#:}"; GEM_PATH="${GEM_PATH%:}"
-        unset GEM_ROOT GEM_HOME
+
+        unset GEM_HOME
         [[ -z "$GEM_PATH" ]] && unset GEM_PATH
     fi
 
     PATH="${PATH#:}"; PATH="${PATH%:}"
-    unset RUBY_ROOT RUBY_ENGINE RUBY_VERSION RUBYOPT
+    unset RUBY_ROOT RUBY_ENGINE RUBY_VERSION RUBYOPT GEM_ROOT
     hash -r
 }
 
-function chruby_use()
-{
+function chruby_use() {
     if [[ ! -x "$1/bin/ruby" ]]; then
         echo "chruby: $1/bin/ruby not executable" >&2
         return 1
@@ -43,19 +42,22 @@ function chruby_use()
     export RUBYOPT="$2"
     export PATH="$RUBY_ROOT/bin:$PATH"
 
-    eval "$("$RUBY_ROOT/bin/ruby" - <<EOF
-puts "export RUBY_ENGINE=#{defined?(RUBY_ENGINE) ? RUBY_ENGINE : 'ruby'};"
+    eval "$(RUBYGEMS_GEMDEPS="" "$RUBY_ROOT/bin/ruby" - <<EOF
+puts "export RUBY_ENGINE=#{Object.const_defined?(:RUBY_ENGINE) ? RUBY_ENGINE : 'ruby'};"
 puts "export RUBY_VERSION=#{RUBY_VERSION};"
 begin; require 'rubygems'; puts "export GEM_ROOT=#{Gem.default_dir.inspect};"; rescue LoadError; end
 EOF
 )"
     echo "using $(dull_red $(basename $1))\n"
+    export PATH="${GEM_ROOT:+$GEM_ROOT/bin:}$PATH"
 
-    if (( $UID != 0 )); then
+    if (( UID != 0 )); then
         export GEM_HOME="$HOME/.gem/$RUBY_ENGINE/$RUBY_VERSION"
         export GEM_PATH="$GEM_HOME${GEM_ROOT:+:$GEM_ROOT}${GEM_PATH:+:$GEM_PATH}"
-        export PATH="$GEM_HOME/bin${GEM_ROOT:+:$GEM_ROOT/bin}:$PATH"
+        export PATH="$GEM_HOME/bin:$PATH"
     fi
+
+    hash -r
 }
 
 function chruby()
@@ -68,28 +70,41 @@ function chruby()
             echo "chruby: $CHRUBY_VERSION"
             ;;
         on)
-            CHRUBY_AUTOSWITCH=true;
+            CHRUBY_AUTOSWITCH=true
             ;;
         off)
-            CHRUBY_AUTOSWITCH=false;
+            CHRUBY_AUTOSWITCH=false
+            ;;
+        env)
+            echo ''
+            echo "$(dull_red PATH:)"
+            echo $PATH | tr ':' '\n'
+            echo ''
+            echo "$(dull_red GEM_HOME) \t=>\t$GEM_HOME"
+            echo "$(dull_red GEM_ROOT) \t=>\t$GEM_ROOT"
+            echo "$(dull_red GEM_PATH) \t=>\t$GEM_PATH"
+            echo ''
+            echo "$(dull_red RUBY_ENGINE) \t=>\t$RUBY_ENGINE"
+            echo "$(dull_red RUBY_ROOT) \t=>\t$RUBY_ROOT"
             ;;
         "")
-            local dir star
+            local dir ruby
             for dir in "${RUBIES[@]}"; do
-                dir="${dir%%/}"
-                if [[ "$dir" == "$RUBY_ROOT" ]]; then star="*"
-                else                                  star=" "
+                dir="${dir%%/}"; ruby="${dir##*/}"
+                if [[ "$dir" == "$RUBY_ROOT" ]]; then
+                    echo " * ${ruby} ${RUBYOPT}"
+                else
+                    echo "  ${ruby}"
                 fi
 
-                echo " $star ${dir##*/}"
             done
             ;;
         system) chruby_reset ;;
         *)
-            local dir match
+            local dir ruby match
             for dir in "${RUBIES[@]}"; do
-                dir="${dir%%/}"
-                case "${dir##*/}" in
+                dir="${dir%%/}"; ruby="${dir##*/}"
+                case "$ruby" in
                     "$1")match="$dir" && break ;;
                     *"$1"*)match="$dir" ;;
                 esac
@@ -119,6 +134,8 @@ function chruby_auto() {
         dir="${dir%/*}"
 
         if { read -r version <"$dir/.ruby-version"; } 2>/dev/null || [[ -n "$version" ]]; then
+            version="${version%%[[:space:]]}"
+
             if [[ "$version" == "$RUBY_AUTO_VERSION" ]]; then return
             else
                 RUBY_AUTO_VERSION="$version"
@@ -136,7 +153,5 @@ function chruby_auto() {
 }
 
 function chpwd() {
-    if on_osx; then
-        [[ $CHRUBY_AUTOSWITCH = true ]] && chruby_auto
-    fi
+    [[ $CHRUBY_AUTOSWITCH == true ]] && chruby_auto
 }

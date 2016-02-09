@@ -65,4 +65,5 @@ function go_bins()      { echo "/usr/local/go/bin:$GOPATH/bin" }
 export GOPATH=$HOME/go
 export PATH=$(gem_bins):$(global_bins):$(go_bins)
 
+# to trigger chruby auto when new shell is opened
 chpwd
