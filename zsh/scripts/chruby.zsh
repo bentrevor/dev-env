@@ -125,7 +125,11 @@ function chruby()
 
 # auto.sh
 unset RUBY_AUTO_VERSION
-export CHRUBY_AUTOSWITCH=true
+if on_osx; then
+    export CHRUBY_AUTOSWITCH=true
+else
+    export CHRUBY_AUTOSWITCH=false
+fi
 
 function chruby_auto() {
     local dir="$PWD/" version
