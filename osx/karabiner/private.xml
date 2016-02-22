@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<root>
+  <devicevendordef>
+    <vendorname>TECHNOMANCY</vendorname>
+    <vendorid>0x16c0</vendorid>
+  </devicevendordef>
+
+  <deviceproductdef>
+    <productname>ATREUS</productname>
+    <productid>0x047c</productid>
+  </deviceproductdef>
+
+  <item>
+    <name>fix control-slash</name>
+    <appendix>remap C-/ to C-_</appendix>
+    <identifier>fixcontrolslash</identifier>
+    <autogen>
+      __KeyToKey__
+      KeyCode::SLASH, ModifierFlag::CONTROL_L,
+      KeyCode::MINUS, ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L
+    </autogen>
+  </item>
+
+  <item>
+    <name>set mark for atreus</name>
+    <appendix>remap C-bksp to C-space</appendix>
+    <identifier>setmarkforatreus</identifier>
+
+    <device_only>DeviceVendor::TECHNOMANCY, DeviceProduct::ATREUS</device_only>
+
+    <autogen>
+      __KeyToKey__
+      KeyCode::DELETE, ModifierFlag::CONTROL_L,
+      KeyCode::SPACE, ModifierFlag::CONTROL_L
+    </autogen>
+  </item>
+</root>
