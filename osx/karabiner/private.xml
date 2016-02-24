@@ -11,13 +11,47 @@
   </deviceproductdef>
 
   <item>
-    <name>fix control-slash</name>
-    <appendix>remap C-/ to C-_</appendix>
-    <identifier>fixcontrolslash</identifier>
+    <!-- apparently Terminal.app is vt100-compatible but not vt102, meaning it doesn't understand
+         control codes for a lot of characters: /,.';+= -->
+    <!--  C-/  ==>  C-_  -->
+    <!--  C-'  ==>  C-\  -->
+    <!--  C-,  ==>  C-]  -->
+    <!--  C-.  ==>  C-^  -->
+
+    <name>fix terminal control sequences</name>
+    <appendix>vt100-compatible control sequences</appendix>
+    <identifier>fixterminalcontrolsequences</identifier>
+
+    <only>TERMINAL</only>
+
     <autogen>
       __KeyToKey__
       KeyCode::SLASH, ModifierFlag::CONTROL_L,
       KeyCode::MINUS, ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L
+    </autogen>
+
+    <autogen>
+      __KeyToKey__
+      KeyCode::QUOTE, ModifierFlag::CONTROL_L,
+      KeyCode::BACKSLASH, ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L
+    </autogen>
+
+    <autogen>
+      __KeyToKey__
+      KeyCode::COMMA, ModifierFlag::CONTROL_L,
+      KeyCode::BRACKET_RIGHT, ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L
+    </autogen>
+
+    <autogen>
+      __KeyToKey__
+      KeyCode::DOT, ModifierFlag::CONTROL_L,
+      KeyCode::KEY_6, ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L
+    </autogen>
+
+    <autogen>
+      __KeyToKey__
+      KeyCode::SEMICOLON, ModifierFlag::CONTROL_L,
+      KeyCode::BACKSLASH, ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L
     </autogen>
   </item>
 
