@@ -14,9 +14,10 @@
     <!-- apparently Terminal.app is vt100-compatible but not vt102, meaning it doesn't understand
          control codes for a lot of characters: /,.';+= -->
     <!--  C-/  ==>  C-_  -->
-    <!--  C-'  ==>  C-\  -->
-    <!--  C-,  ==>  C-]  -->
-    <!--  C-.  ==>  C-^  -->
+    <!--  C-'  ==>  M-!  -->
+    <!--  C-,  ==>  M-@  -->
+    <!--  C-.  ==>  M-#  -->
+    <!--  C-;  ==>  M-$  -->
 
     <name>fix terminal control sequences</name>
     <appendix>vt100-compatible control sequences</appendix>
@@ -32,26 +33,26 @@
 
     <autogen>
       __KeyToKey__
+      KeyCode::SEMICOLON, ModifierFlag::CONTROL_L,
+      KeyCode::1, ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L
+    </autogen>
+
+    <autogen>
+      __KeyToKey__
       KeyCode::QUOTE, ModifierFlag::CONTROL_L,
-      KeyCode::BACKSLASH, ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L
+      KeyCode::2, ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L
     </autogen>
 
     <autogen>
       __KeyToKey__
       KeyCode::COMMA, ModifierFlag::CONTROL_L,
-      KeyCode::BRACKET_RIGHT, ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L
+      KeyCode::3, ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L
     </autogen>
 
     <autogen>
       __KeyToKey__
       KeyCode::DOT, ModifierFlag::CONTROL_L,
-      KeyCode::KEY_6, ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L
-    </autogen>
-
-    <autogen>
-      __KeyToKey__
-      KeyCode::SEMICOLON, ModifierFlag::CONTROL_L,
-      KeyCode::BACKSLASH, ModifierFlag::CONTROL_L | ModifierFlag::SHIFT_L
+      KeyCode::4, ModifierFlag::OPTION_L | ModifierFlag::SHIFT_L
     </autogen>
   </item>
 

@@ -2,7 +2,6 @@
 ZSH_THEME="norm"
 COMPLETION_WAITING_DOTS="true"
 
-
 ### Completion ###
 fpath=(~/.zsh/completion $fpath) # add custom completion to fpath
 setopt COMPLETE_IN_WORD
@@ -43,6 +42,7 @@ setopt LOCAL_OPTIONS # allow functions to have local options
 setopt LOCAL_TRAPS   # allow functions to have local traps
 setopt PROMPT_SUBST
 setopt AUTO_CD
+setopt RC_QUOTES     # 'allow ''single'' quote interpolation'
 stty -ixon -ixoff    # disable scroll lock
 export EDITOR=vim
 set -o emacs
