@@ -19,3 +19,5 @@
   st = status
   co = checkout
   br = branch
+  l = log -10 --graph --date=short --format=format:'%C(blue)%h%C(white) %C(240)- %C(white)%s%C(240) -- %an, %ad'
+  ll = log --graph --date=short --format=format:'%C(blue)%h%C(white) %C(240)- %C(white)%s%C(240) -- %an, %ad'

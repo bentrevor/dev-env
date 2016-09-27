@@ -6,6 +6,7 @@ function main() {
 
     [[ $zsh_flag      = true ]] && configure_zsh
     [[ $vim_flag      = true ]] && configure_vim
+    [[ $emacs_flag    = true ]] && configure_emacs
     [[ $dotfiles_flag = true ]] && configure_dotfiles
 
     printf '\n\n ~~~ finished configuring shell, you might need to restart ~~~ \n\n'
@@ -167,6 +168,13 @@ function configure_dotfiles() {
             link_dotfile $dev_env_dotfile_path $dotfile_path
         fi
     done
+}
+
+function configure_emacs() {
+    if wet_flagged && on_ubuntu_vm; then
+        apt-get update
+        apt-get install emacs24-nox -y
+    fi
 }
 
 function backup_and_rm() {
