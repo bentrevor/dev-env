@@ -4,9 +4,7 @@
   (package-initialize)
 
   (load "~/.emacs.d/mine/settings.el")
-  (load "~/.emacs.d/mine/packages.el")
-  (load "~/.emacs.d/mine/keys/keybindings.el")
-  (load "~/.emacs.d/mine/keyboard-macros.el")
+  (load "~/.emacs.d/mine/keybindings.el")
   (load "~/.emacs.d/mine/org-mode-options.el")
 
   (magit-status)
