@@ -1,8 +1,0 @@
-platform='unknown'
-[[ $(uname) == 'Linux' ]]  && platform='linux'
-[[ $(uname) == 'Darwin' ]] && platform='osx'
-
-function on_linux() { [[ $platform == 'linux' ]] }
-function on_osx()   { [[ $platform == 'osx' ]]   }
-
-for config_file ($HOME/.zsh/scripts/*.zsh) source $config_file
