@@ -46,7 +46,7 @@ export EDITOR=vim
 set -o emacs
 
 function try_source() {
-    [ ! -f "$1" ] && source "$1"
+    [ -f "$1" ] && source "$1"
 }
 
 try_source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -77,14 +77,19 @@ alias sudo='sudo ' # make aliases work with "sudo"
 alias tmux='tmux -2' # let tmux use 256 colors
 
 alias l='ls -lhpG'
+alias emacs='emacs-snapshot '
 alias e='emacs'
 alias t='tree -C --dirsfirst -I "coverage|build|dist|*srv" '
 alias t2='t -L 2'
 alias be='bundle exec'
 
-
 ### Functions ###
 function show-path() { echo $PATH | tr ':' '\n' }
+
+function git-ssh() {
+    touch ~/.ssh/config
+    echo "Host github.com\n  StrictHostKeyChecking no" >> ~/.ssh/config
+} 
 
 function dull_red()     { echo "$(tput setaf 1)$1$(tput sgr0)" }
 function dull_green()   { echo "$(tput setaf 2)$1$(tput sgr0)" }

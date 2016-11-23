@@ -10,7 +10,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :private_network, ip: '192.168.56.56'
   config.ssh.forward_agent = true
 
-  config.vm.define 'base', autostart: true do |e|
+  config.vm.define 'eevee', autostart: true do |e|
     e.vm.network 'forwarded_port', host: 4040, guest: 8080, autocorrect: true
     e.vm.provider :virtualbox do |vb|
       vb.memory = 4096
@@ -18,12 +18,19 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  packages = %w(git emacs24-nox tree acpi silversearcher-ag zsh).join(' ')
+  packages = %w(git tree acpi silversearcher-ag zsh).join(' ')
   config.vm.provision "~~ apt install (#{packages})  ~~", type: 'shell', inline: <<-SHELL
 apt-get update
 apt-get install #{packages} -y
 SHELL
 
+  config.vm.provision "~~ install emacs from ppa  ~~", type: 'shell', inline: <<-SHELL
+add-apt-repository ppa:ubuntu-elisp/ppa -y
+apt-get update
+apt-get install emacs-snapshot -y
+SHELL
+
+  # the ~/.ssh/config file is gone when I ssh into the vm, but it makes this clone work
   config.vm.provision '~~ get env ~~', type: 'shell', inline: <<-SHELL
 touch ~/.ssh/config
 echo "Host github.com\n  StrictHostKeyChecking no" >> ~/.ssh/config

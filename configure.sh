@@ -10,6 +10,8 @@ function symlink() {
 
 cp -r /home/vagrant/env/emacs /home/vagrant/.emacs.d
 cp -r /home/vagrant/env/zsh /home/vagrant/.zsh
+chown -R vagrant:vagrant /home/vagrant/.zsh
+chown -R vagrant:vagrant /home/vagrant/.emacs.d
 
 symlink /home/vagrant/env/zsh/zshrc /home/vagrant/.zshrc
 chsh -s $(which zsh) vagrant
