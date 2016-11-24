@@ -23,3 +23,4 @@
   l = log -10 --graph --date=short --format=format:'%C(blue)%h%C(white) %C(240)- %C(white)%s%C(240) -- %an, %ad'
   lb = log -10 --graph --date=short --format=format:'%C(blue)%h%C(white) %C(green)%d %C(white)%s%C(240) -- %an, %ad'
   ll = log --graph --date=short --format=format:'%C(blue)%h%C(white) %C(240)- %C(white)%s%C(240) -- %an, %ad'
+  llb = log --graph --date=short --format=format:'%C(blue)%h%C(white) %C(green)%d %C(white)%s%C(240) -- %an, %ad'
