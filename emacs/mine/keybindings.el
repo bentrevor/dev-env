@@ -1,8 +1,6 @@
 ;; define my very own minor mode
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
-(load "~/.emacs.d/mine/keys/vim.el")
-
 (define-key my-keys-minor-mode-map (kbd "C-x C-y")   'pbcopy)
 (defun pbcopy ()
   (interactive)
