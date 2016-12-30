@@ -52,6 +52,7 @@ function try_source() {
 try_source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 try_source $HOME/.zsh/
 try_source /usr/local/share/chruby/chruby.sh
+try_source /usr/local/share/chruby/auto.sh
 
 
 ### Prompt ###
