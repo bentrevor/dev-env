@@ -1,0 +1,53 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.require_version ">= 1.7.4"
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = 'ubuntu/trusty64'
+  config.vm.box_check_update = false
+  config.vm.network :private_network, ip: '192.168.56.56'
+  config.ssh.forward_agent = true
+
+  config.vm.provision :shell, :inline => "echo 'US/Central' | sudo tee /etc/timezone && sudo dpkg-reconfigure --frontend noninteractive tzdata"
+
+  config.vm.define 'base', autostart: true do |e|
+    e.vm.network 'forwarded_port', host: 4040, guest: 8080, autocorrect: true
+    e.vm.provider :virtualbox do |vb|
+      vb.memory = 4096
+      vb.cpus = 1
+    end
+  end
+
+  packages = %w(git tree acpi zsh).join(' ')
+  config.vm.provision "~~ apt install (#{packages})  ~~", type: 'shell', inline: <<-SHELL
+apt-get update
+apt-get install #{packages} -y
+SHELL
+
+  install_from_ppas(config: config, packages: %w(git emacs-snapshot tmux), ppas: %w(ubuntu-elisp/ppa git-core/ppa pi-rho/dev))
+
+  # the ~/.ssh/config file is gone when I ssh into the vm, but it makes this clone work
+  config.vm.provision '~~ get env ~~', type: 'shell', inline: <<-SHELL
+touch ~/.ssh/config
+echo "Host github.com\n  StrictHostKeyChecking no" >> ~/.ssh/config
+
+git clone -b vagrant git@github.com:bentrevor/env.git /home/vagrant/env
+chown -R vagrant:vagrant /home/vagrant/env
+source /home/vagrant/env/configure.sh
+
+apt-get install -y automake pkg-config libpcre3-dev zlib1g-dev liblzma-dev
+git clone git@github.com:ggreer/the_silver_searcher.git
+SHELL
+end
+
+def install_from_ppas(config:, packages: [], ppas: [])
+  add_apt_repositories = ppas.map { |ppa| "add-apt-repository -y ppa:#{ppa}" }.join("\n")
+
+  config.vm.provision "~~  installing packages from ppas  ~~", type: 'shell', inline: <<-SHELL
+#{add_apt_repositories}
+apt-get update
+apt-get install #{packages.join(' ')} -y
+SHELL
+end
