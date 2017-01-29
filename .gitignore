@@ -2,6 +2,7 @@
 Vagrantfile
 .DS_Store
 boxes
+package.box
 *.swp
 
 emacs/auto-save-list
