@@ -1,1 +1,10 @@
-backups/**/*
+.vagrant
+Vagrantfile
+.DS_Store
+boxes
+package.box
+*.swp
+
+emacs/auto-save-list
+emacs/elpa/archives/melpa
+emacs/projectile-bookmarks.eld
