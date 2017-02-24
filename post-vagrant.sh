@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-git clone -b vagrant git@github.com:bentrevor/env.git /home/vagrant/env
+git clone git@github.com:bentrevor/env.git /home/vagrant/env
 chown -R vagrant:vagrant /home/vagrant/env
 source /home/vagrant/env/configure.sh
 
