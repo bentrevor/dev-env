@@ -4,7 +4,7 @@
 (define-key isearch-mode-map [(control h)] 'isearch-delete-char) ;; C-h to delete while searching
 
 ;; colors
-(load-theme 'tsdh-dark t)
+(load-theme 'base16-apathy t)
 ;; (load-theme 'light-soap t)
 (set-face-attribute 'fringe nil :background "#FFF")
 
@@ -15,6 +15,7 @@
 (setq linum-format "%4d  ")
 (setq left-fringe 6)
 
+(add-hook 'haskell-mode-hook #'linum-mode)
 (add-hook 'ruby-mode-hook #'linum-mode)
 (add-hook 'paredit-mode-hook #'linum-mode)
 (add-hook 'sh-mode-hook #'linum-mode)
@@ -23,6 +24,15 @@
 (add-hook 'html-mode-hook #'linum-mode)
 (add-hook 'yaml-mode-hook #'linum-mode)
 (add-hook 'elm-mode-hook #'linum-mode)
+
+(add-hook 'linum-mode-hook 'fix-linum-colors)
+
+(defun fix-linum-colors ()
+  (set-face-foreground 'linum "white")
+  (set-face-background 'linum "black")
+  )
+
+
 
 
 (setq ruby-insert-encoding-magic-comment nil)
@@ -168,3 +178,9 @@
 
 ;; for easy keybindings with single-key repeats
 (require 'smartrep)
+
+(setq ibuffer-formats
+      '((mark modified read-only " "
+              (name 30 30 :left :elide) " "
+              (mode 6 6 :left :elide) " " filename-and-process)
+        (mark " " (name 16 -1) " " filename)))

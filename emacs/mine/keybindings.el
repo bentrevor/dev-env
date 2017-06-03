@@ -1,6 +1,10 @@
-;; define my very own minor mode
+;; aliases
+(defalias 'git 'magit-status)
+(defalias 'blame 'magit-blame)
+
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
+;; keybindings.el
 (define-key my-keys-minor-mode-map (kbd "C-x C-y")   'pbcopy)
 (defun pbcopy ()
   (interactive)
@@ -10,8 +14,6 @@
 (define-key my-keys-minor-mode-map (kbd "C-x a g s")   'ag-project)
 (define-key my-keys-minor-mode-map (kbd "C-x a g r")   'ag-project-regexp)
 
-(define-key my-keys-minor-mode-map (kbd "C-c k")     'zap-up-to-char)
-(define-key my-keys-minor-mode-map (kbd "C-c K")     'kill-to-string)
 (defun kill-to-string (target)
   (interactive "skill to string: ")
   (set-mark-command nil)
@@ -25,6 +27,8 @@
   (interactive)
   (yank)
   (call-interactively 'indent-region))
+
+(define-key my-keys-minor-mode-map (kbd "M-y") 'helm-show-kill-ring)
 
 ;; n == number
 (smartrep-define-key
@@ -76,6 +80,7 @@
         (add-to-list 'minor-mode-map-alist mykeys))))
 (ad-activate 'load)
 
+;; functions.el
 ;; unset
 (global-unset-key (kbd "M-ESC ESC"))
 (global-unset-key (kbd "C-x o"))
@@ -87,20 +92,57 @@
 (global-unset-key (kbd "C-x m"))
 (define-key my-keys-minor-mode-map (kbd "C-c C-h")   '(lambda () (interactive))) ;; global-unset-key wasn't working
 
+(defun pbcopy-filename ()
+  (interactive)
+  (let ((buffer-name-from-root (replace-regexp-in-string (regexp-quote (projectile-project-root)) "" (buffer-file-name) nil 'literal)))
+    (shell-command-to-string (concat "echo -n " buffer-name-from-root "| pbcopy"))))
+
+(define-key my-keys-minor-mode-map (kbd "C-c y f") 'pbcopy-filename)
+
+(defun pbcopy-full-filename ()
+  (interactive)
+  (shell-command-to-string (concat "echo -n " (buffer-file-name) "| pbcopy")))
+
+(define-key my-keys-minor-mode-map (kbd "C-c y F") 'pbcopy-full-filename)
+
 (define-key my-keys-minor-mode-map (kbd "C-s")       'isearch-forward-regexp)
 (define-key my-keys-minor-mode-map (kbd "C-r")       'isearch-backward-regexp)
 (define-key my-keys-minor-mode-map (kbd "C-h")       'delete-backward-char)
 
-;; karabiner remaps vt102 control codes:
-;; C-' to C-\
+;; iterm remaps vt102 control codes:
+;; C-; to C-\
+;; C-' to M-'
 ;; C-/ to C-_
 ;; C-, to C-]
 ;; C-. to C-^
 (define-key my-keys-minor-mode-map (kbd "C-]")       'backward-paragraph)
 (define-key my-keys-minor-mode-map (kbd "C-^")       'forward-paragraph)
 
+(define-key isearch-mode-map (kbd "C-M-h") 'isearch-yank-word-or-char)
+
+(defun set-selective-display-dlw (&optional level)
+  "Fold text indented same of more than the cursor.
+If level is set, set the indent level to LEVEL.
+If 'selective-display' is already set to LEVEL, clicking
+F5 again will unset 'selective-display' by setting it to 0."
+  (interactive "P")
+  (back-to-indentation)
+  (if (eq selective-display (1+ (current-column)))
+      (set-selective-display 0)
+    (set-selective-display (or level (1+ (current-column))))))
+
+(define-key my-keys-minor-mode-map (kbd "C-M-f")       'set-selective-display-dlw)
+(define-key my-keys-minor-mode-map (kbd "C-M-u")       '(lambda () (interactive) (set-selective-display 0)))
+
+(defun close-and-kill-this-pane ()
+  "If there are multiple windows, then close this pane and kill the buffer in it also."
+  (interactive)
+  (kill-this-buffer)
+  (if (not (one-window-p))
+      (delete-window)))
+
 (defun chomp-end (str)
-  "Chomp tailing whitespace from STR."
+  "Chomp trailing whitespace from STR."
   (replace-regexp-in-string (rx (* (any " \t\n")) eos)
                             ""
                             str))
@@ -110,7 +152,6 @@
   (insert (chomp-end (concat (shell-command-to-string command))))
   )
 
-(define-key my-keys-minor-mode-map (kbd "C-\\")      'insert-shell-command)
 
 ;; need this so redo can work
 (define-key my-keys-minor-mode-map (kbd "C-/")       'undo-tree-undo)
@@ -118,8 +159,7 @@
 (define-key my-keys-minor-mode-map (kbd "M-,")       'beginning-of-buffer)
 (define-key my-keys-minor-mode-map (kbd "M-.")       'end-of-buffer)
 
-(define-key my-keys-minor-mode-map (kbd "C-w")       'backward-kill-word)
-(define-key helm-map               (kbd "C-w")       'backward-kill-word)
+(define-key my-keys-minor-mode-map (kbd "C-M-h")     'backward-kill-word)
 
 (define-key my-keys-minor-mode-map (kbd "C-v")       'whole-line-or-region-kill-region)
 (define-key my-keys-minor-mode-map (kbd "M-v")       'whole-line-or-region-kill-ring-save)
@@ -127,8 +167,14 @@
 (define-key my-keys-minor-mode-map (kbd "M-x")       'helm-M-x)
 (define-key my-keys-minor-mode-map (kbd "ESC M-x")   'execute-extended-command) ;; original M-x
 
+(define-key key-translation-map (kbd "M-h") [f1])
+
+(define-key my-keys-minor-mode-map (kbd "M-a")       'back-to-indentation)
+(add-hook 'org-mode-hook (lambda () (local-unset-key (kbd "M-a"))))
+
+(define-key my-keys-minor-mode-map (kbd "M-e")       'move-end-of-line)
+
 ;; C-x
-(define-key my-keys-minor-mode-map (kbd "C-x d k")   'describe-key)
 (define-key my-keys-minor-mode-map (kbd "C-x f")     'helm-projectile-find-file)
 (define-key my-keys-minor-mode-map (kbd "C-x C-f")   'helm-projectile-find-file)
 (define-key my-keys-minor-mode-map (kbd "C-x M-f")   'find-file)
@@ -138,27 +184,6 @@
 (define-key my-keys-minor-mode-map (kbd "C-x C-\\")  'split-window-right)
 (define-key my-keys-minor-mode-map (kbd "C-x -")     'split-window-below)
 (define-key my-keys-minor-mode-map (kbd "C-x C-d")   'delete-window)
-
-;; M-r  -->  rectangle
-(define-key my-keys-minor-mode-map (kbd "M-r r")     'string-rectangle)
-(define-key my-keys-minor-mode-map (kbd "M-r i")     'string-insert-rectangle)
-(define-key my-keys-minor-mode-map (kbd "M-r k")     'kill-rectangle)
-(define-key my-keys-minor-mode-map (kbd "M-r y")     'yank-rectangle)
-(define-key my-keys-minor-mode-map (kbd "M-r M-v")   'copy-rectangle-as-kill)
-
-(define-key my-keys-minor-mode-map (kbd "C-x C-b l")     'switch-to-buffer)
-(define-key my-keys-minor-mode-map (kbd "C-x C-b L")     'ibuffer)
-(define-key my-keys-minor-mode-map (kbd "C-x C-b r")     'revert-buffer)
-
-(setq ibuffer-formats
-      '((mark modified read-only " "
-              (name 30 30 :left :elide) " "
-              (mode 16 16 :left :elide) " " filename-and-process)
-        (mark " " (name 16 -1) " " filename)))
-
-(define-key my-keys-minor-mode-map (kbd "C-x r s")     'replace-string)
-(define-key my-keys-minor-mode-map (kbd "C-x r b")     'revert-buffer)
-(define-key my-keys-minor-mode-map (kbd "C-x q r s")   'query-replace-string)
 
 ;; move cursor between windows
 (define-key my-keys-minor-mode-map (kbd "C-x h")     'windmove-left)
@@ -171,26 +196,43 @@
 (define-key my-keys-minor-mode-map (kbd "C-x C-l")   'windmove-right)
 
 ;; other
-(define-key my-keys-minor-mode-map (kbd "C-x g i t")     'magit-status)
-(define-key my-keys-minor-mode-map (kbd "C-x g h")     'open-in-github)
 (define-key my-keys-minor-mode-map (kbd "<backtab>") 'hippie-expand)
-(define-key my-keys-minor-mode-map (kbd "M-;")       'whole-line-or-region-comment-dwim)
+(define-key my-keys-minor-mode-map (kbd "M-'")       'whole-line-or-region-comment-dwim)
 (define-key my-keys-minor-mode-map (kbd "C-x u")     'browse-url-at-point)
 
-;; s == scroll
-(smartrep-define-key
-    my-keys-minor-mode-map "C-c s" '(("n" . 'scroll-up-line)
-                                     ("p" . 'scroll-down-line)
-                                     ))
 
 ;; yank without auto-indentation
 (define-key my-keys-minor-mode-map (kbd "M-C-y") 'yank)
 
 ;; yank-and-indent is annoying in haskell
 (add-hook 'haskell-mode-hook (lambda () (define-key my-keys-minor-mode-map (kbd "C-y") 'yank)))
-(add-hook 'haskell-mode-hook (lambda () (define-key my-keys-minor-mode-map (kbd "<backtab>") 'hippie-expand)))
+
+(require 'hideshow)
+(require 'sgml-mode)
+(require 'nxml-mode)
+
+(add-to-list 'hs-special-modes-alist
+             '(nxml-mode
+               "<!--\\|<[^/>]*[^/]>"
+               "-->\\|</[^/>]*[^/]>"
+
+               "<!--"
+               sgml-skip-tag-forward
+               nil))
 
 
+
+(add-hook 'nxml-mode-hook 'hs-minor-mode)
+
+;; optional key bindings, easier than hs defaults
+(define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
+
+;; (defun show-ruby-functions ()
+;;   (interactive)
+;;   (list-matching-lines " def |private") ;; FIXME can't get this function to work from elisp
+;; )
+
+;; vim.el
 (define-key my-keys-minor-mode-map (kbd "M-j") 'join-line-below)
 (defun join-line-below ()
   "Like 'J' in vim."
@@ -198,10 +240,19 @@
   (next-line)
   (delete-indentation))
 
-(define-key my-keys-minor-mode-map (kbd "C-x C-o")   'switch-to-previous-buffer)
+(defun unpop-to-mark-command ()
+  "Unpop off mark ring. Does nothing if mark ring is empty."
+  (interactive)
+  (when mark-ring
+    (setq mark-ring (cons (copy-marker (mark-marker)) mark-ring))
+    (set-marker (mark-marker) (car (last mark-ring)) (current-buffer))
+    (when (null (mark t)) (ding))
+    (setq mark-ring (nbutlast mark-ring))
+    (goto-char (marker-position (car (last mark-ring))))))
 
 (smartrep-define-key
-    my-keys-minor-mode-map "C-x" '(("C-o" . 'switch-to-previous-buffer)
+    my-keys-minor-mode-map "C-x" '(("C-o" . 'pop-global-mark)
+                                   ;; ("C-i" . 'unpop-to-mark-command)
                                    ))
 (defun switch-to-previous-buffer ()
   "Like 'C-o' in vim (but it can only go back one buffer...)."
@@ -218,12 +269,13 @@
          (forward-word)
          (backward-word)))))
 
+(global-set-key (kbd "M-;") (lambda () (interactive) (insert ";")))
+
 ;;;;;;;;;;;;;;;
 ;;
 ;; :<n>{d,p,y,}
 ;;
-(define-key my-keys-minor-mode-map (kbd "C-c ;")     'open-prompt)
-(define-key my-keys-minor-mode-map (kbd "C-c C-\\")  'open-prompt)
+(define-key my-keys-minor-mode-map (kbd "; ;")     'open-prompt)
 
 (defmacro on-line-number (line-number cmd)
   `(progn
@@ -246,6 +298,9 @@
      (t (message "invalid!")))
     (save-buffer)))
 
+;; can still suspend with C-x C-z
+(global-set-key (kbd "C-z") nil)
+
 ;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; {d,v,y}{a,i}{w,p}
@@ -254,117 +309,141 @@
 (defconst vim-fn-scopes '(("i" "in") ("a" "around")))
 (defconst vim-fn-boundaries '(("p" "paragraph") ("w" "word") ("b" "parens") ("B" "curly-braces") ("[" "square-brackets")))
 
-(define-key my-keys-minor-mode-map (kbd "C-c d a p") 'delete-around-paragraph)
-(define-key my-keys-minor-mode-map (kbd "C-c d a w") 'delete-around-word)
-(define-key my-keys-minor-mode-map (kbd "C-c d a b") 'delete-around-parens)
-(define-key my-keys-minor-mode-map (kbd "C-c d a B") 'delete-around-curly-braces)
-(define-key my-keys-minor-mode-map (kbd "C-c d i p") 'delete-in-paragraph)
-(define-key my-keys-minor-mode-map (kbd "C-c d i w") 'delete-in-word)
-(define-key my-keys-minor-mode-map (kbd "C-c d i b") 'delete-in-parens)
-(define-key my-keys-minor-mode-map (kbd "C-c d i B") 'delete-in-curly-braces)
+(defun vim-til-char (ch)
+  (interactive "c")
+  (search-forward (char-to-string ch))
+  (backward-char)
+  )
 
-(define-key my-keys-minor-mode-map (kbd "C-c y a p") 'copy-around-paragraph)
-(define-key my-keys-minor-mode-map (kbd "C-c y a w") 'copy-around-word)
-(define-key my-keys-minor-mode-map (kbd "C-c y a b") 'copy-around-parens)
-(define-key my-keys-minor-mode-map (kbd "C-c y a B") 'copy-around-curly-braces)
-(define-key my-keys-minor-mode-map (kbd "C-c y i p") 'copy-in-paragraph)
-(define-key my-keys-minor-mode-map (kbd "C-c y i w") 'copy-in-word)
-(define-key my-keys-minor-mode-map (kbd "C-c y i b") 'copy-in-parens)
-(define-key my-keys-minor-mode-map (kbd "C-c y i B") 'copy-in-curly-braces)
+(defun vim-find-char (ch)
+  (interactive "c")
+  (search-forward (char-to-string ch))
+  )
 
-(defun pbcopy-filename ()
-  (interactive)
-  (shell-command-to-string (concat "echo -n " (buffer-file-name) "| pbcopy")))
+(defun backwards-vim-til-char (ch)
+  (interactive "c")
+  (search-backward (char-to-string ch))
+  (forward-char)
+  )
 
-(define-key my-keys-minor-mode-map (kbd "C-c y f") 'pbcopy-filename)
+(defun backwards-vim-find-char (ch)
+  (interactive "c")
+  (search-backward (char-to-string ch))
+  )
 
-(defun pbcopy-rspec-it ()
-  (interactive)
-  (shell-command-to-string (concat "echo -n " (progn (re-search-backward "^ *it ")
-                                                     (forward-to-beginning-of-next-word)
-                                                     (forward-to-beginning-of-next-word)
-                                                     (backward-char)
-                                                     (set-mark-command nil)
-                                                     (end-of-line)
-                                                     (backward-char) (backward-char) (backward-char)
-                                                     (kill-ring-save (region-beginning) (region-end))
-                                                     (yank)) "| pbcopy")))
+(defun kill-with-fn (jump-fn ch)
+  (set-mark-command nil)
+  (funcall jump-fn ch)
+  (kill-region (region-beginning) (region-end))
+  )
 
-(define-key my-keys-minor-mode-map (kbd "C-c v a p") 'select-around-paragraph)
-(define-key my-keys-minor-mode-map (kbd "C-c v a w") 'select-around-word)
-(define-key my-keys-minor-mode-map (kbd "C-c v a b") 'select-around-parens)
-(define-key my-keys-minor-mode-map (kbd "C-c v a B") 'select-around-curly-braces)
-(define-key my-keys-minor-mode-map (kbd "C-c v i p") 'select-in-paragraph)
-(define-key my-keys-minor-mode-map (kbd "C-c v i w") 'select-in-word)
-(define-key my-keys-minor-mode-map (kbd "C-c v i b") 'select-in-parens)
-(define-key my-keys-minor-mode-map (kbd "C-c v i B") 'select-in-curly-braces)
+;; prefixes:
+;;   r - rectangle
+;;   m - set mark in register
+;;   j - jump to register (either jump to mark or execute macro)
+;;   tfTF - jump to char
+;;   k - kill in/around
+;;   c - copy in/around
+;;   p - paragraph (this could have some overlap with k/c, but use cases are limited so it's ok)
 
-;; each command
-;;   each scope
-;;     each boundary
-;;       (define-key my-keys-minor-mode-map (kbd (concat "C-c " command scope boundary)) '(TODO))
+(define-key my-keys-minor-mode-map (kbd "C-x C-s") (lambda () (interactive) (sleep-for 2) (message "use ;w")))
+(define-key my-keys-minor-mode-map (kbd "; w")     'save-buffer)
+(define-key my-keys-minor-mode-map (kbd "; *")     'isearch-forward-symbol-at-point)
 
-(defun delete-around-paragraph ()    (interactive) (vim-function "delete" "around" "paragraph"))
-(defun delete-around-word ()         (interactive) (vim-function "delete" "around" "word"))
-(defun delete-around-parens ()       (interactive) (vim-function "delete" "around" "parens"))
-(defun delete-around-curly-braces () (interactive) (vim-function "delete" "around" "curly-braces"))
-(defun delete-in-paragraph ()        (interactive) (vim-function "delete" "in" "paragraph"))
-(defun delete-in-word ()             (interactive) (vim-function "delete" "in" "word"))
-(defun delete-in-parens ()           (interactive) (vim-function "delete" "in" "parens"))
-(defun delete-in-curly-braces ()     (interactive) (vim-function "delete" "in" "curly-braces"))
+(define-key my-keys-minor-mode-map (kbd "; r i") 'string-insert-rectangle)
+(define-key my-keys-minor-mode-map (kbd "; r r") 'string-rectangle)
+(define-key my-keys-minor-mode-map (kbd "; r k") 'kill-rectangle)
 
-(defun copy-around-paragraph ()      (interactive) (vim-function "copy" "around" "paragraph"))
-(defun copy-around-word ()           (interactive) (vim-function "copy" "around" "word"))
-(defun copy-around-parens ()         (interactive) (vim-function "copy" "around" "parens"))
-(defun copy-around-curly-braces ()   (interactive) (vim-function "copy" "around" "curly-braces"))
-(defun copy-in-paragraph ()          (interactive) (vim-function "copy" "in" "paragraph"))
-(defun copy-in-word ()               (interactive) (vim-function "copy" "in" "word"))
-(defun copy-in-parens ()             (interactive) (vim-function "copy" "in" "parens"))
-(defun copy-in-curly-braces ()       (interactive) (vim-function "copy" "in" "curly-braces"))
+(define-key my-keys-minor-mode-map (kbd "; k m") 'kmacro-to-register)
+(define-key my-keys-minor-mode-map (kbd "; m") 'point-to-register)
+(define-key my-keys-minor-mode-map (kbd "; j") 'jump-to-register)
 
-(defun select-around-paragraph ()    (interactive) (vim-function "select" "around" "paragraph"))
-(defun select-around-word ()         (interactive) (vim-function "select" "around" "word"))
-(defun select-around-parens ()       (interactive) (vim-function "select" "around" "parens"))
-(defun select-around-curly-braces () (interactive) (vim-function "select" "around" "curly-braces"))
-(defun select-in-paragraph ()        (interactive) (vim-function "select" "in" "paragraph"))
-(defun select-in-word ()             (interactive) (vim-function "select" "in" "word"))
-(defun select-in-parens ()           (interactive) (vim-function "select" "in" "parens"))
-(defun select-in-curly-braces ()     (interactive) (vim-function "select" "in" "curly-braces"))
+(define-key my-keys-minor-mode-map (kbd "; t") 'vim-til-char)
+(define-key my-keys-minor-mode-map (kbd "; f") 'vim-find-char)
+(define-key my-keys-minor-mode-map (kbd "; T") 'backwards-vim-til-char)
+(define-key my-keys-minor-mode-map (kbd "; F") 'backwards-vim-find-char)
 
-(defun vim-function (command boundaries scope)
-  (vim-select boundaries scope)
+(define-key my-keys-minor-mode-map (kbd "; k t") (lambda (ch) (interactive "c") (kill-with-fn 'vim-til-char ch)))
+(define-key my-keys-minor-mode-map (kbd "; k f") (lambda (ch) (interactive "c") (kill-with-fn 'vim-find-char ch)))
+(define-key my-keys-minor-mode-map (kbd "; k T") (lambda (ch) (interactive "c") (kill-with-fn 'backwards-vim-til-char ch)))
+(define-key my-keys-minor-mode-map (kbd "; k F") (lambda (ch) (interactive "c") (kill-with-fn 'backwards-vim-find-char ch)))
+
+(define-key my-keys-minor-mode-map (kbd "; k a") 'bt/vim-kill-around)
+(define-key my-keys-minor-mode-map (kbd "; k i") 'bt/vim-kill-in)
+(define-key my-keys-minor-mode-map (kbd "; c a") 'bt/vim-copy-around)
+(define-key my-keys-minor-mode-map (kbd "; c i") 'bt/vim-copy-in)
+
+(define-key my-keys-minor-mode-map (kbd "; d p") (lambda () (interactive) (bt/vim-copy-around ?p) (yank-and-indent)))
+(define-key my-keys-minor-mode-map (kbd "; c p") (lambda () (interactive) (mark-paragraph) (whole-line-or-region-comment-dwim "")))
+
+(define-key my-keys-minor-mode-map (kbd "; b") 'switch-to-buffer)
+(define-key my-keys-minor-mode-map (kbd "; i") 'ibuffer)
+(define-key my-keys-minor-mode-map (kbd "; e SPC") (lambda () (interactive) (message " C-j: Find File (keeping session)\nProjectile files") (helm-projectile-find-file)))
+(define-key my-keys-minor-mode-map (kbd "; e RET") (lambda () (interactive) (revert-buffer :ignore-auto :noconfirm)))
+
+(defun bt/vim-copy-around (ch)
+  (interactive "c")
+  (bt/vim-fn "copy" "around" (bt/vim-char-to-boundary ch))
+  )
+
+(defun bt/vim-copy-in (ch)
+  (interactive "c")
+  (bt/vim-fn "copy" "in" (bt/vim-char-to-boundary ch))
+  )
+
+(defun bt/vim-kill-around (ch)
+  (interactive "c")
+  (bt/vim-fn "kill" "around" (bt/vim-char-to-boundary ch))
+  )
+
+(defun bt/vim-kill-in (ch)
+  (interactive "c")
+  (bt/vim-fn "kill" "in" (bt/vim-char-to-boundary ch))
+  )
+
+(defun bt/vim-char-to-boundary (ch)
+  "b -> (\nB -> {\np -> paragraph\netc."
+  (bt/vim-str-to-boundary (char-to-string ch)))
+
+(defun bt/vim-str-to-boundary (ch)
+  "b -> (\nB -> {\np -> paragraph\netc."
+  (cond
+   ((string-match-p (regexp-quote ch) "()b") "(")
+   ((string-match-p (regexp-quote ch) "{}B") "{")
+   ((string-match-p (regexp-quote ch) "p") "paragraph")
+   ((string-match-p (regexp-quote ch) "[]") "[")
+   ((string-match-p (regexp-quote ch) "'") "'")
+   ((string-match-p (regexp-quote ch) "\"") "\"")
+   ))
+
+(defun bt/vim-fn (command boundaries scope)
+  (bt/vim-select boundaries scope)
 
   (cond
    ((string= command "copy") (whole-line-or-region-kill-ring-save 1))
    ((string= command "select") nil) ;; region will always be selected by this point
-   ((string= command "delete") (whole-line-or-region-kill-region 1)))
+   ((string= command "kill") (whole-line-or-region-kill-region 1)))
 
   (message (concat command " " boundaries " " scope)))
 
-(defun vim-select (boundaries scope)
+(defun bt/vim-select (boundaries scope)
   (cond
-   ((string= boundaries "in") (vim-select-in scope))
-   ((string= boundaries "around") (vim-select-around scope))))
+   ((string= boundaries "in") (bt/vim-select-in scope))
+   ((string= boundaries "around") (bt/vim-select-around scope))))
 
-(defun vim-select-in (scope)
+(defun bt/vim-select-in (scope)
   (cond
-   ((string= scope "word") (er/expand-region 1))
    ((string= scope "paragraph") (mark-paragraph) (forward-char))
-   ((string= scope "parens") (select-in "("))
-   ((string= scope "curly-braces") (select-in "{"))
-   ((string= scope "square-brackets") (select-in "["))
+   (t (bt/vim-select-in-char scope))
    ))
 
-(defun vim-select-around (scope)
+(defun bt/vim-select-around (scope)
   (cond
-   ((string= scope "word") (er/expand-region 1)) ;; TODO this works the same as "in" right now (but I never used `daw` much anyway)
    ((string= scope "paragraph") (mark-paragraph))
-   ((string= scope "parens") (select-around "("))
-   ((string= scope "curly-braces") (select-around "{"))
-   ((string= scope "square-brackets") (select-around "["))
+   (t (bt/vim-select-around-char scope))
    ))
 
-(defun select-in (char)
+(defun bt/vim-select-in-char (char)
   (search-backward char)
   (er/expand-region 1)
   (forward-char)
@@ -372,7 +451,7 @@
   (backward-char)
   )
 
-(defun select-around (char)
+(defun bt/vim-select-around-char (char)
   (search-backward char)
   (er/expand-region 1)
   )
@@ -381,7 +460,7 @@
 ;;
 ;; % (jump to matching paren)
 ;;
-(define-key my-keys-minor-mode-map (kbd "C-c %")     'jump-to-matching-paren)
+(define-key my-keys-minor-mode-map (kbd "; %")     'jump-to-matching-paren)
 
 (defvar open-paren-char ?()
   (defvar closed-paren-char ?))
@@ -425,6 +504,7 @@
 (defun jump-to-matching-paren ()
   "Like '%' in vim."
   (interactive)
-  (if (on-opening-paren)
-      (jump-to-closing-paren)
-    (jump-to-opening-paren)))
+  (cond
+   ((on-opening-paren) (jump-to-closing-paren))
+   ((on-closing-paren) (jump-to-opening-paren))
+   ))

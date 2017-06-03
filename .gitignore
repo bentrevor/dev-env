@@ -6,5 +6,5 @@ package.box
 *.swp
 
 emacs/auto-save-list
-emacs/elpa/archives/melpa
+emacs/elpa/archives
 emacs/projectile-bookmarks.eld
