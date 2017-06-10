@@ -148,3 +148,64 @@ function show-terminal-colors() {
     done
     echo
 }
+
+function sha() {
+    local commit
+
+    if [ -z $1 ]; then
+        commit=HEAD
+    else
+        commit=$1
+    fi;
+
+    local gitsha=$(git rev-list -1 $commit)
+
+    echo -n $gitsha | pbcopy
+    echo "pbcopied $gitsha"
+}
+
+function shrug() {
+    echo -n "¯\_(ツ)_/¯" | pbcopy
+}
+
+function fig() {
+    # find . | grep
+    find . -not -path "./.git/*" | grep "$@"
+}
+
+function ir() {
+    # interactive rebase
+    git rebase -i HEAD~$1
+}
+
+function wip() {
+    if [[ $@ == "" ]]; then
+        local msg=$(date +'%H:%M:%S')
+    else
+        local msg="$(echo $(date +'%H:%M:%S') '==>' $@)"
+    fi
+
+    git add -A
+    git commit -m $msg
+}
+
+function d() {
+    if [[ -z "$1" ]]; then
+        pushd $HOME 2>&1 > /dev/null
+    else
+        pushd "$1" 2>&1 > /dev/null
+    fi
+}
+
+function du() {
+    popd 2>&1 > /dev/null
+}
+
+function ds() {
+    dirs | tr ' ' '\n'
+}
+
+function pss() {
+    local process_names=$(echo $@ | sed 's/ /\\|/g')
+    ps aux | grep -v grep | grep "$process_names"
+}
