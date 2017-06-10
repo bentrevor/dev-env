@@ -269,13 +269,11 @@ F5 again will unset 'selective-display' by setting it to 0."
          (forward-word)
          (backward-word)))))
 
-(global-set-key (kbd "M-;") (lambda () (interactive) (insert ";")))
-
 ;;;;;;;;;;;;;;;
 ;;
 ;; :<n>{d,p,y,}
 ;;
-(define-key my-keys-minor-mode-map (kbd "; ;")     'open-prompt)
+(define-key my-keys-minor-mode-map (kbd "M-; M-;")     'open-prompt)
 
 (defmacro on-line-number (line-number cmd)
   `(progn
@@ -347,39 +345,39 @@ F5 again will unset 'selective-display' by setting it to 0."
 ;;   p - paragraph (this could have some overlap with k/c, but use cases are limited so it's ok)
 
 (define-key my-keys-minor-mode-map (kbd "C-x C-s") (lambda () (interactive) (sleep-for 2) (message "use ;w")))
-(define-key my-keys-minor-mode-map (kbd "; w")     'save-buffer)
-(define-key my-keys-minor-mode-map (kbd "; *")     'isearch-forward-symbol-at-point)
+(define-key my-keys-minor-mode-map (kbd "M-; w")     'save-buffer)
+(define-key my-keys-minor-mode-map (kbd "M-; *")     'isearch-forward-symbol-at-point)
 
-(define-key my-keys-minor-mode-map (kbd "; r i") 'string-insert-rectangle)
-(define-key my-keys-minor-mode-map (kbd "; r r") 'string-rectangle)
-(define-key my-keys-minor-mode-map (kbd "; r k") 'kill-rectangle)
+(define-key my-keys-minor-mode-map (kbd "M-; r i") 'string-insert-rectangle)
+(define-key my-keys-minor-mode-map (kbd "M-; r r") 'string-rectangle)
+(define-key my-keys-minor-mode-map (kbd "M-; r k") 'kill-rectangle)
 
-(define-key my-keys-minor-mode-map (kbd "; k m") 'kmacro-to-register)
-(define-key my-keys-minor-mode-map (kbd "; m") 'point-to-register)
-(define-key my-keys-minor-mode-map (kbd "; j") 'jump-to-register)
+(define-key my-keys-minor-mode-map (kbd "M-; k m") 'kmacro-to-register)
+(define-key my-keys-minor-mode-map (kbd "M-; m") 'point-to-register)
+(define-key my-keys-minor-mode-map (kbd "M-; j") 'jump-to-register)
 
-(define-key my-keys-minor-mode-map (kbd "; t") 'vim-til-char)
-(define-key my-keys-minor-mode-map (kbd "; f") 'vim-find-char)
-(define-key my-keys-minor-mode-map (kbd "; T") 'backwards-vim-til-char)
-(define-key my-keys-minor-mode-map (kbd "; F") 'backwards-vim-find-char)
+(define-key my-keys-minor-mode-map (kbd "M-; t") 'vim-til-char)
+(define-key my-keys-minor-mode-map (kbd "M-; f") 'vim-find-char)
+(define-key my-keys-minor-mode-map (kbd "M-; T") 'backwards-vim-til-char)
+(define-key my-keys-minor-mode-map (kbd "M-; F") 'backwards-vim-find-char)
 
-(define-key my-keys-minor-mode-map (kbd "; k t") (lambda (ch) (interactive "c") (kill-with-fn 'vim-til-char ch)))
-(define-key my-keys-minor-mode-map (kbd "; k f") (lambda (ch) (interactive "c") (kill-with-fn 'vim-find-char ch)))
-(define-key my-keys-minor-mode-map (kbd "; k T") (lambda (ch) (interactive "c") (kill-with-fn 'backwards-vim-til-char ch)))
-(define-key my-keys-minor-mode-map (kbd "; k F") (lambda (ch) (interactive "c") (kill-with-fn 'backwards-vim-find-char ch)))
+(define-key my-keys-minor-mode-map (kbd "M-; k t") (lambda (ch) (interactive "c") (kill-with-fn 'vim-til-char ch)))
+(define-key my-keys-minor-mode-map (kbd "M-; k f") (lambda (ch) (interactive "c") (kill-with-fn 'vim-find-char ch)))
+(define-key my-keys-minor-mode-map (kbd "M-; k T") (lambda (ch) (interactive "c") (kill-with-fn 'backwards-vim-til-char ch)))
+(define-key my-keys-minor-mode-map (kbd "M-; k F") (lambda (ch) (interactive "c") (kill-with-fn 'backwards-vim-find-char ch)))
 
-(define-key my-keys-minor-mode-map (kbd "; k a") 'bt/vim-kill-around)
-(define-key my-keys-minor-mode-map (kbd "; k i") 'bt/vim-kill-in)
-(define-key my-keys-minor-mode-map (kbd "; c a") 'bt/vim-copy-around)
-(define-key my-keys-minor-mode-map (kbd "; c i") 'bt/vim-copy-in)
+(define-key my-keys-minor-mode-map (kbd "M-; k a") 'bt/vim-kill-around)
+(define-key my-keys-minor-mode-map (kbd "M-; k i") 'bt/vim-kill-in)
+(define-key my-keys-minor-mode-map (kbd "M-; c a") 'bt/vim-copy-around)
+(define-key my-keys-minor-mode-map (kbd "M-; c i") 'bt/vim-copy-in)
 
-(define-key my-keys-minor-mode-map (kbd "; d p") (lambda () (interactive) (bt/vim-copy-around ?p) (yank-and-indent)))
-(define-key my-keys-minor-mode-map (kbd "; c p") (lambda () (interactive) (mark-paragraph) (whole-line-or-region-comment-dwim "")))
+(define-key my-keys-minor-mode-map (kbd "M-; d p") (lambda () (interactive) (bt/vim-copy-around ?p) (yank-and-indent)))
+(define-key my-keys-minor-mode-map (kbd "M-; c p") (lambda () (interactive) (mark-paragraph) (whole-line-or-region-comment-dwim "")))
 
-(define-key my-keys-minor-mode-map (kbd "; b") 'switch-to-buffer)
-(define-key my-keys-minor-mode-map (kbd "; i") 'ibuffer)
-(define-key my-keys-minor-mode-map (kbd "; e SPC") (lambda () (interactive) (message " C-j: Find File (keeping session)\nProjectile files") (helm-projectile-find-file)))
-(define-key my-keys-minor-mode-map (kbd "; e RET") (lambda () (interactive) (revert-buffer :ignore-auto :noconfirm)))
+(define-key my-keys-minor-mode-map (kbd "M-; b") 'switch-to-buffer)
+(define-key my-keys-minor-mode-map (kbd "M-; i") 'ibuffer)
+(define-key my-keys-minor-mode-map (kbd "M-; e SPC") (lambda () (interactive) (message " C-j: Find File (keeping session)\nProjectile files") (helm-projectile-find-file)))
+(define-key my-keys-minor-mode-map (kbd "M-; e RET") (lambda () (interactive) (revert-buffer :ignore-auto :noconfirm)))
 
 (defun bt/vim-copy-around (ch)
   (interactive "c")
@@ -460,7 +458,7 @@ F5 again will unset 'selective-display' by setting it to 0."
 ;;
 ;; % (jump to matching paren)
 ;;
-(define-key my-keys-minor-mode-map (kbd "; %")     'jump-to-matching-paren)
+(define-key my-keys-minor-mode-map (kbd "M-; %")     'jump-to-matching-paren)
 
 (defvar open-paren-char ?()
   (defvar closed-paren-char ?))
