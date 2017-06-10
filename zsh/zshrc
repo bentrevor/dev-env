@@ -58,11 +58,22 @@ try_source /usr/local/share/chruby/auto.sh
 ### Prompt ###
 function in_git_repo() { git rev-parse 2> /dev/null }
 
-function current_dir()    { echo "[%{$fg_bold[blue]%}%~%{$reset_color%}]" }
+function linux_os() { [[ $(uname) == "Linux" ]] }
+function mac_os() { [[ $(uname) == "Darwin" ]] }
+
+if linux_os; then
+    prompt_branch_color='green'
+    prompt_path_color='blue'
+else
+    prompt_branch_color='red'
+    prompt_path_color='magenta'
+fi
+
+function current_dir()    { echo "[%{$fg_bold[$prompt_path_color]%}%~%{$reset_color%}]" }
 function current_branch() {
     if in_git_repo; then
         local branch_name=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
-        echo "[%{$fg_bold[green]%}$branch_name%{$reset_color%}]"
+        echo "[%{$fg_bold[$prompt_branch_color]%}$branch_name%{$reset_color%}]"
     else
         echo ""
     fi
@@ -72,7 +83,11 @@ export PS1='$(current_branch)$(current_dir) '
 
 
 ### Aliases ###
-alias ls='ls -G'
+if linux_os; then
+    alias ls='ls --color'
+else
+    alias ls='ls -G'
+fi
 alias grep='grep --color=auto'
 alias sudo='sudo ' # make aliases work with "sudo"
 alias tmux='tmux -2' # let tmux use 256 colors
