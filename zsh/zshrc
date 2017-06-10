@@ -58,11 +58,11 @@ try_source /usr/local/share/chruby/auto.sh
 ### Prompt ###
 function in_git_repo() { git rev-parse 2> /dev/null }
 
-function current_dir()    { echo "[%{$fg_bold[green]%}%~%{$reset_color%}]" }
+function current_dir()    { echo "[%{$fg_bold[blue]%}%~%{$reset_color%}]" }
 function current_branch() {
     if in_git_repo; then
         local branch_name=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
-        echo "[%{$fg_bold[cyan]%}$branch_name%{$reset_color%}]"
+        echo "[%{$fg_bold[green]%}$branch_name%{$reset_color%}]"
     else
         echo ""
     fi

@@ -345,6 +345,8 @@ F5 again will unset 'selective-display' by setting it to 0."
 ;;   p - paragraph (this could have some overlap with k/c, but use cases are limited so it's ok)
 
 (define-key my-keys-minor-mode-map (kbd "C-x C-s") (lambda () (interactive) (sleep-for 2) (message "use ;w")))
+(define-key my-keys-minor-mode-map (kbd "M-; q RET") 'delete-window)
+(define-key my-keys-minor-mode-map (kbd "M-; q a RET") 'save-buffers-kill-terminal)
 (define-key my-keys-minor-mode-map (kbd "M-; w")     'save-buffer)
 (define-key my-keys-minor-mode-map (kbd "M-; *")     'isearch-forward-symbol-at-point)
 
@@ -361,6 +363,7 @@ F5 again will unset 'selective-display' by setting it to 0."
 (define-key my-keys-minor-mode-map (kbd "M-; T") 'backwards-vim-til-char)
 (define-key my-keys-minor-mode-map (kbd "M-; F") 'backwards-vim-find-char)
 
+;; FIXME doesn't do anything if you are already on the char that you are killing to
 (define-key my-keys-minor-mode-map (kbd "M-; k t") (lambda (ch) (interactive "c") (kill-with-fn 'vim-til-char ch)))
 (define-key my-keys-minor-mode-map (kbd "M-; k f") (lambda (ch) (interactive "c") (kill-with-fn 'vim-find-char ch)))
 (define-key my-keys-minor-mode-map (kbd "M-; k T") (lambda (ch) (interactive "c") (kill-with-fn 'backwards-vim-til-char ch)))
@@ -378,6 +381,17 @@ F5 again will unset 'selective-display' by setting it to 0."
 (define-key my-keys-minor-mode-map (kbd "M-; i") 'ibuffer)
 (define-key my-keys-minor-mode-map (kbd "M-; e SPC") (lambda () (interactive) (message " C-j: Find File (keeping session)\nProjectile files") (helm-projectile-find-file)))
 (define-key my-keys-minor-mode-map (kbd "M-; e RET") (lambda () (interactive) (revert-buffer :ignore-auto :noconfirm)))
+(define-key my-keys-minor-mode-map (kbd "M-; s s")     'replace-string)
+(define-key my-keys-minor-mode-map (kbd "M-; s r")     'replace-regexp)
+(define-key my-keys-minor-mode-map (kbd "M-; s q s")   'query-replace)
+(define-key my-keys-minor-mode-map (kbd "M-; s q r")   'query-replace-regexp)
+
+;; (define-key my-keys-minor-mode-map (kbd "M-; s p v")     'split-window-right)
+;; (define-key my-keys-minor-mode-map (kbd "M-; s p h")     'split-window-below)
+
+(define-key my-keys-minor-mode-map (kbd "M-; |")     'split-window-right)
+(define-key my-keys-minor-mode-map (kbd "M-; -")     'split-window-below)
+
 
 (defun bt/vim-copy-around (ch)
   (interactive "c")
