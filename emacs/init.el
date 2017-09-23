@@ -107,7 +107,7 @@ static char *gnus-pointer[] = {
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (base16-theme org anti-zenburn-theme reverse-theme haskell-mode badger-theme whole-line-or-region smartrep magit highlight-numbers helm-projectile expand-region)))
+    (web-mode elm-mode base16-theme org anti-zenburn-theme reverse-theme haskell-mode badger-theme whole-line-or-region smartrep magit highlight-numbers helm-projectile expand-region)))
  '(pdf-view-midnight-colors (quote ("#232333" . "#c7c7c7")))
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")
@@ -151,10 +151,13 @@ static char *gnus-pointer[] = {
  '(magit-diff-added-highlight ((t (:background "green" :foreground "#cceecc"))))
  '(magit-diff-removed ((t (:background "red" :foreground "#ffdddd"))))
  '(magit-diff-removed-highlight ((t (:background "red" :foreground "#eecccc"))))
+ '(match ((t (:background "black" :foreground "blue" :inverse-video t))))
  '(mode-line ((t (:background "color-143" :foreground "brightblue" :box nil))))
  '(mode-line-buffer-id ((t (:foreground "black"))))
  '(mode-line-inactive ((t (:background "color-255" :foreground "brightblack" :box nil))))
  '(org-done ((t (:background "green" :foreground "black"))))
  '(org-hide ((t (:foreground "color-254"))))
  '(org-todo ((t (:background "red" :foreground "black"))))
- '(region ((t (:background "color-181")))))
+ '(region ((t (:background "color-181"))))
+ '(web-mode-html-attr-name-face ((t (:foreground "brightblack"))))
+ '(web-mode-html-tag-bracket-face ((t (:foreground "brightblack")))))

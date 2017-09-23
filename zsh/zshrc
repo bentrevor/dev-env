@@ -53,6 +53,7 @@ try_source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 try_source $HOME/.zsh/
 try_source /usr/local/share/chruby/chruby.sh
 try_source /usr/local/share/chruby/auto.sh
+try_source /usr/local/share/gem_home/gem_home.sh
 
 
 ### Prompt ###
@@ -72,7 +73,7 @@ fi
 function current_dir()    { echo "[%{$fg_bold[$prompt_path_color]%}%~%{$reset_color%}]" }
 function current_branch() {
     if in_git_repo; then
-        local branch_name=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+        local branch_name=$(git symbolic-ref HEAD --short)
         echo "[%{$fg_bold[$prompt_branch_color]%}$branch_name%{$reset_color%}]"
     else
         echo ""
@@ -95,7 +96,7 @@ alias tmux='tmux -2' # let tmux use 256 colors
 alias l='ls -lhpG'
 # alias emacs='emacs-snapshot '
 alias e='emacs'
-alias t='tree -C --dirsfirst -I "coverage|build|dist|*srv" '
+alias t='tree -C --dirsfirst -I "coverage|build|dist|*srv|elm-stuff" '
 alias t2='t -L 2'
 alias be='bundle exec'
 alias v='vagrant'

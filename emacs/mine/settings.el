@@ -64,6 +64,7 @@
 (winner-mode 1)                                         ;; undo/redo split layout changes
 (setq echo-keystrokes 0.001)                            ;; like vim's showcmd
 (setq require-final-newline nil)                        ;; don't add newline at end of file
+(setq elm-format-on-save t)
 
 ;;;;;;;;;;;;;;;
 ;;

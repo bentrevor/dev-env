@@ -148,14 +148,14 @@
                            (define-key my-keys-minor-mode-map (kbd "M-# b") 'org-backward-heading-same-level)
                            (define-key my-keys-minor-mode-map (kbd "M-# f") 'org-forward-heading-same-level)
                            (define-key my-keys-minor-mode-map (kbd "M-# u") 'outline-up-heading)
-                           (define-key my-keys-minor-mode-map (kbd "M-# p") 'org-previous-visible-heading)
-                           (define-key my-keys-minor-mode-map (kbd "M-# n") 'org-next-visible-heading)
+                           (define-key my-keys-minor-mode-map (kbd "M-# p") 'outline-previous-visible-heading)
+                           (define-key my-keys-minor-mode-map (kbd "M-# n") 'outline-next-visible-heading)
 
                            (define-key my-keys-minor-mode-map (kbd "M-# C-b") 'org-backward-heading-same-level)
                            (define-key my-keys-minor-mode-map (kbd "M-# C-f") 'org-forward-heading-same-level)
                            (define-key my-keys-minor-mode-map (kbd "M-# C-u") 'outline-up-heading)
-                           (define-key my-keys-minor-mode-map (kbd "M-# C-p") 'org-previous-visible-heading)
-                           (define-key my-keys-minor-mode-map (kbd "M-# C-n") 'org-next-visible-heading)
+                           (define-key my-keys-minor-mode-map (kbd "M-# C-p") 'outline-previous-visible-heading)
+                           (define-key my-keys-minor-mode-map (kbd "M-# C-n") 'outline-next-visible-heading)
 
                            (define-key my-keys-minor-mode-map (kbd "M-# !") 'org-subtree-in-new-file)
 
@@ -199,8 +199,8 @@
                                                                   ("b" . 'org-backward-heading-same-level)
                                                                   ("f" . 'org-forward-heading-same-level)
                                                                   ("u" . 'outline-up-heading)
-                                                                  ("p" . 'org-previous-visible-heading)
-                                                                  ("n" . 'org-next-visible-heading)
+                                                                  ("p" . 'outline-previous-visible-heading)
+                                                                  ("n" . 'outline-next-visible-heading)
                                                                   ("TAB" . 'org-cycle)
                                                                   ("C-i" . 'org-cycle)
 
