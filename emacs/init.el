@@ -60,7 +60,7 @@ static char *note[] = {
  '(fci-rule-character-color "#202020")
  '(fci-rule-color "#3f1a1a")
  '(fringe-mode 4 nil (fringe))
- '(gnus-logo-colors (quote ("#0d7b72" "#adadad")))
+ '(gnus-logo-colors (quote ("#0d7b72" "#adadad")) t)
  '(gnus-mode-line-image-cache
    (quote
     (image :type xpm :ascent center :data "/* XPM */
@@ -83,7 +83,7 @@ static char *gnus-pointer[] = {
 \"######..###.######\",
 \"###....####.######\",
 \"###..######.######\",
-\"###########.######\" };")))
+\"###########.######\" };")) t)
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
    (quote
@@ -107,7 +107,7 @@ static char *gnus-pointer[] = {
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (anti-zenburn-theme reverse-theme haskell-mode badger-theme whole-line-or-region smartrep magit highlight-numbers helm-projectile expand-region)))
+    (base16-theme org anti-zenburn-theme reverse-theme haskell-mode badger-theme whole-line-or-region smartrep magit highlight-numbers helm-projectile expand-region)))
  '(pdf-view-midnight-colors (quote ("#232333" . "#c7c7c7")))
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")
@@ -143,7 +143,7 @@ static char *gnus-pointer[] = {
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:background nil))))
+ '(default ((t (:inherit nil :stipple nil :background "color-254" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 1 :width normal :foundry "default" :family "default"))))
  '(helm-selection ((t (:background "yellow" :foreground "black" :underline nil))))
  '(highlight ((t (:background "color-181"))))
  '(magit-blame-heading ((t (:background "color-255" :foreground "black"))))
@@ -154,4 +154,7 @@ static char *gnus-pointer[] = {
  '(mode-line ((t (:background "color-143" :foreground "brightblue" :box nil))))
  '(mode-line-buffer-id ((t (:foreground "black"))))
  '(mode-line-inactive ((t (:background "color-255" :foreground "brightblack" :box nil))))
+ '(org-done ((t (:background "green" :foreground "black"))))
+ '(org-hide ((t (:foreground "color-254"))))
+ '(org-todo ((t (:background "red" :foreground "black"))))
  '(region ((t (:background "color-181")))))

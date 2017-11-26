@@ -98,6 +98,7 @@ alias e='emacs'
 alias t='tree -C --dirsfirst -I "coverage|build|dist|*srv" '
 alias t2='t -L 2'
 alias be='bundle exec'
+alias v='vagrant'
 
 ### Functions ###
 function show-path() { echo $PATH | tr ':' '\n' }
@@ -224,3 +225,4 @@ function pss() {
     local process_names=$(echo $@ | sed 's/ /\\|/g')
     ps aux | grep -v grep | grep "$process_names"
 }
+

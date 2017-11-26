@@ -26,15 +26,15 @@ Vagrant.configure("2") do |config|
   chruby_dir = "#{home_dir}/chruby-0.3.9"
 
   config.vm.provision "~~ install chruby and ruby 2.3 ~~", type: 'shell', inline: <<-SHELL
-wget -O #{ruby_install_dir}.tar.gz https://github.com/postmodern/ruby-install/archive/v0.6.0.tar.gz
-tar -xzvf #{ruby_install_dir}.tar.gz
-pushd #{ruby_install_dir}
+wget -O /home/gladys/ruby-install-0.6.0.tar.gz https://github.com/postmodern/ruby-install/archive/v0.6.0.tar.gz
+tar -xzvf /home/gladys/ruby-install-0.6.0.tar.gz
+pushd /home/gladys/ruby-install-0.6.0
 make install
 popd
 
-wget -O #{chruby_dir}.tar.gz https://github.com/postmodern/chruby/archive/v0.3.9.tar.gz
-tar -xzvf #{chruby_dir}.tar.gz
-pushd #{chruby_dir}
+wget -O /home/gladys/chruby-0.3.9.tar.gz https://github.com/postmodern/chruby/archive/v0.3.9.tar.gz
+tar -xzvf /home/gladys/chruby-0.3.9.tar.gz
+pushd /home/gladys/chruby-0.3.9
 make install
 popd
 

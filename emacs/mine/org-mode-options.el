@@ -1,7 +1,8 @@
 (autoload 'org "org" "Org mode." t)
 
-(setq org-agenda-files (quote ("~/org/trackers.org" "~/org/todo.org")))
+(setq org-agenda-files '("~/org/todo.org"))
 
+(setq org-archive-location "~/org/old.org_archive")
 (setq org-startup-indented t)             ;; indent tasks and only show one star
 (setq org-log-done nil)                   ;; no timestamp when task moves to DONE
 (setq org-enforce-todo-dependencies t)    ;; can't finish a task when a subtask is incomplete
@@ -9,18 +10,12 @@
 (setq org-clock-clocktable-default-properties '(:maxlevel 4))
 (setq org-time-clocksum-format '(:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t)) ;; format time to not show days in clock tables
 
-(setq org-todo-keywords
-      '((type "TODO" "ENV" "CODE" "MAYBE" "REVIEW" "PIVOTAL" "|" "PEND" "SKIP" "DONE")))
 
-;; I don't think this is working
-;; toggle TODO state when all checkboxes are checked
-(defun org-summary-todo (n-done n-not-done)
-  "Switch entry to DONE when all subentries are done, to TODO otherwise."
-  (let (org-log-done org-log-states)   ; turn off logging
-    (org-todo (if (= n-not-done 0) "DONE" "TODO"))))
+;; (setq org-tags-exclude-from-inheritance '("todo"))
+(setq org-todo-keywords
+      '((type "TODO" "LIST" "|" "SKIP" "DONE")))
 
 (add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
-
 
 (add-hook 'org-mode-hook (lambda ()
                            (add-hook 'before-save-hook 'org-align-all-tags)
@@ -52,20 +47,6 @@
                              (search-forward " ")
                              )
 
-
-                           (defun insert-pivotal-subtree (id-or-url)
-                             "for running this pivotal script"
-                             (interactive "surl or id: ")
-                             (insert (shell-command-to-string (concat "./piv.sh " (replace-regexp-in-string "#" "\#" id-or-url))))
-                             (search-backward ":PROPERTIES")
-                             (previous-line)
-                             (beginning-of-line)
-                             (forward-char)
-                             (forward-char)
-                             (forward-char)
-                             (forward-char)
-                             )
-
                            (defun all-the-way-down ()
                              (interactive)
                              (dotimes (n 10 r)
@@ -81,6 +62,21 @@
                            (define-key my-keys-minor-mode-map (kbd "M-p") 'org-metaup)
                            (define-key my-keys-minor-mode-map (kbd "ESC M-n") 'all-the-way-down)
                            (define-key my-keys-minor-mode-map (kbd "ESC M-p") 'all-the-way-up)
+
+                           (defun bt/org-archive-next-done ()
+                             (interactive)
+                             (re-search-forward "^\** DONE ")
+                             (org-archive-subtree)
+                             )
+
+                           (define-key my-keys-minor-mode-map (kbd "C-x C-x") 'bt/org-archive-all-done)
+
+                           (defun bt/org-archive-all-done ()
+                             (interactive)
+                             (dotimes (n 100 r)
+                               (bt/org-archive-next-done)))
+
+
 
 
                            ;; these are basically the same as org commands that can be run with C-c
@@ -167,7 +163,6 @@
                            (define-key my-keys-minor-mode-map (kbd "M-# 2") (lambda () (interactive) (org-priority ?B)))
                            (define-key my-keys-minor-mode-map (kbd "M-# 3") (lambda () (interactive) (org-priority ?C)))
 
-
                            ;; subtree modification
                            (define-key my-keys-minor-mode-map (kbd "M-# B") 'org-promote-subtree)
                            (define-key my-keys-minor-mode-map (kbd "M-# F") 'org-demote-subtree)
@@ -179,12 +174,15 @@
                            (define-key my-keys-minor-mode-map (kbd "M-# C-l") (lambda () (interactive) (switch-to-buffer "*Org Agenda*") (org-todo-list)))
                            (define-key my-keys-minor-mode-map (kbd "M-# l") 'org-todo-list)
 
-                           (define-key my-keys-minor-mode-map (kbd "M-# t SPC") (lambda () (interactive) (org-todo "")))
-                           (define-key my-keys-minor-mode-map (kbd "M-# t c") (lambda () (interactive) (org-todo "CODE")))
-                           (define-key my-keys-minor-mode-map (kbd "M-# t t") (lambda () (interactive) (org-todo "TODO")))
-                           (define-key my-keys-minor-mode-map (kbd "M-# t r") (lambda () (interactive) (org-todo "REVIEW")))
-                           (define-key my-keys-minor-mode-map (kbd "M-# t m") (lambda () (interactive) (org-todo "MAYBE")))
-                           (define-key my-keys-minor-mode-map (kbd "M-# t d") (lambda () (interactive) (org-todo "DONE")))
+                           ; (define-key my-keys-minor-mode-map (kbd "M-# t SPC") (lambda () (interactive) (org-todo "")))
+                           ; (define-key my-keys-minor-mode-map (kbd "M-# t t") (lambda () (interactive) (org-todo "TODO")))
+                           ; (define-key my-keys-minor-mode-map (kbd "M-# t l") (lambda () (interactive) (org-todo "LIST")))
+                           ; (define-key my-keys-minor-mode-map (kbd "M-# t d") (lambda () (interactive) (org-todo "DONE")))
+                           ; (define-key my-keys-minor-mode-map (kbd "M-# C-SPC") (lambda () (interactive) (org-todo "")))
+                           ; (define-key my-keys-minor-mode-map (kbd "M-# C-t") (lambda () (interactive) (org-todo "TODO")))
+                           ; (define-key my-keys-minor-mode-map (kbd "M-# C-l") (lambda () (interactive) (org-todo "LIST")))
+                           ; (define-key my-keys-minor-mode-map (kbd "M-# C-d") (lambda () (interactive) (org-todo "DONE")))
+
 
 
                            (smartrep-define-key
