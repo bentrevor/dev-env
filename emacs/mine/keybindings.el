@@ -169,6 +169,7 @@ F5 again will unset 'selective-display' by setting it to 0."
 (define-key my-keys-minor-mode-map (kbd "ESC M-x")   'execute-extended-command) ;; original M-x
 
 (define-key key-translation-map (kbd "M-h") [f1])
+(define-key key-translation-map (kbd "M-; h") [f1])
 
 (define-key my-keys-minor-mode-map (kbd "M-a")       'back-to-indentation)
 (add-hook 'org-mode-hook (lambda () (local-unset-key (kbd "M-a"))))
@@ -198,8 +199,27 @@ F5 again will unset 'selective-display' by setting it to 0."
 
 ;; other
 (define-key my-keys-minor-mode-map (kbd "<backtab>") 'hippie-expand)
-(define-key my-keys-minor-mode-map (kbd "M-'")       'whole-line-or-region-comment-dwim)
+(define-key my-keys-minor-mode-map (kbd "M-'")       'bt/whole-line-or-region-comment-dwim)
 (define-key my-keys-minor-mode-map (kbd "C-x u")     'browse-url-at-point)
+
+(defun bt/whole-line-or-region-comment-dwim ()
+  (interactive)
+
+  (if (not mark-active)
+      (progn
+        (beginning-of-line)
+        (set-mark-command nil)
+        (end-of-line)
+        ))
+  (comment-dwim "")
+  )
+
+
+;; (define-key my-keys-minor-mode-map (kbd "ESC <left>") '(lambda () (interactive) (insert "←")))
+;; (define-key my-keys-minor-mode-map (kbd "ESC <up>") '(lambda () (interactive) (insert "↑")))
+;; (define-key my-keys-minor-mode-map (kbd "ESC <right>") '(lambda () (interactive) (insert "→")))
+;; (define-key my-keys-minor-mode-map (kbd "ESC <down>") '(lambda () (interactive) (insert "↓")))
+
 
 
 ;; yank without auto-indentation
@@ -336,16 +356,6 @@ F5 again will unset 'selective-display' by setting it to 0."
   (kill-region (region-beginning) (region-end))
   )
 
-;; prefixes:
-;;   r - rectangle
-;;   m - set mark in register
-;;   j - jump to register (either jump to mark or execute macro)
-;;   tfTF - jump to char
-;;   k - kill in/around
-;;   c - copy in/around
-;;   p - paragraph (this could have some overlap with k/c, but use cases are limited so it's ok)
-
-(define-key my-keys-minor-mode-map (kbd "C-x C-s") (lambda () (interactive) (sleep-for 2) (message "use ;w")))
 (define-key my-keys-minor-mode-map (kbd "M-; q RET") 'delete-window)
 (define-key my-keys-minor-mode-map (kbd "M-; q a RET") 'save-buffers-kill-terminal)
 (define-key my-keys-minor-mode-map (kbd "M-; w")     'save-buffer)
@@ -355,9 +365,8 @@ F5 again will unset 'selective-display' by setting it to 0."
 (define-key my-keys-minor-mode-map (kbd "M-; r r") 'string-rectangle)
 (define-key my-keys-minor-mode-map (kbd "M-; r k") 'kill-rectangle)
 
-(define-key my-keys-minor-mode-map (kbd "M-; k m") 'kmacro-to-register)
-(define-key my-keys-minor-mode-map (kbd "M-; m") 'point-to-register)
-(define-key my-keys-minor-mode-map (kbd "M-; j") 'jump-to-register)
+(define-key my-keys-minor-mode-map (kbd "M-; m") 'point-to-register) ;; mark
+(define-key my-keys-minor-mode-map (kbd "M-; j") 'jump-to-register) ;; jump
 
 (define-key my-keys-minor-mode-map (kbd "M-; t") 'vim-til-char)
 (define-key my-keys-minor-mode-map (kbd "M-; f") 'vim-find-char)
@@ -375,20 +384,19 @@ F5 again will unset 'selective-display' by setting it to 0."
 (define-key my-keys-minor-mode-map (kbd "M-; c a") 'bt/vim-copy-around)
 (define-key my-keys-minor-mode-map (kbd "M-; c i") 'bt/vim-copy-in)
 
-(define-key my-keys-minor-mode-map (kbd "M-; d p") (lambda () (interactive) (bt/vim-copy-around ?p) (yank-and-indent)))
-(define-key my-keys-minor-mode-map (kbd "M-; c p") (lambda () (interactive) (mark-paragraph) (whole-line-or-region-comment-dwim "")))
+(define-key my-keys-minor-mode-map (kbd "M-; d p") (lambda () (interactive) (bt/vim-copy-around ?p) (yank-and-indent))) ;; dup paragraph
+(define-key my-keys-minor-mode-map (kbd "M-; c p") (lambda () (interactive) (mark-paragraph) (bt/whole-line-or-region-comment-dwim))) ;; comment paragraph
 
-(define-key my-keys-minor-mode-map (kbd "M-; b") 'switch-to-buffer)
-(define-key my-keys-minor-mode-map (kbd "M-; i") 'ibuffer)
+(define-key my-keys-minor-mode-map (kbd "M-; e j") 'switch-to-buffer)
+(define-key my-keys-minor-mode-map (kbd "M-; e i") 'ibuffer)
 (define-key my-keys-minor-mode-map (kbd "M-; e SPC") (lambda () (interactive) (message " C-j: Find File (keeping session)\nProjectile files") (helm-projectile-find-file)))
 (define-key my-keys-minor-mode-map (kbd "M-; e RET") (lambda () (interactive) (revert-buffer :ignore-auto :noconfirm)))
+(define-key my-keys-minor-mode-map (kbd "M-; e d") 'dired-jump)
+
 (define-key my-keys-minor-mode-map (kbd "M-; s s")     'replace-string)
 (define-key my-keys-minor-mode-map (kbd "M-; s r")     'replace-regexp)
 (define-key my-keys-minor-mode-map (kbd "M-; s q s")   'query-replace)
 (define-key my-keys-minor-mode-map (kbd "M-; s q r")   'query-replace-regexp)
-
-;; (define-key my-keys-minor-mode-map (kbd "M-; s p v")     'split-window-right)
-;; (define-key my-keys-minor-mode-map (kbd "M-; s p h")     'split-window-below)
 
 (define-key my-keys-minor-mode-map (kbd "M-; |")     'split-window-right)
 (define-key my-keys-minor-mode-map (kbd "M-; -")     'split-window-below)
@@ -521,3 +529,13 @@ F5 again will unset 'selective-display' by setting it to 0."
    ((on-opening-paren) (jump-to-closing-paren))
    ((on-closing-paren) (jump-to-opening-paren))
    ))
+
+(defun bt/smorgeous-api ()
+  (interactive)
+  (setq projectile-project-root "/Users/ben/code/smorgeous/api")
+  )
+
+(defun bt/smorgeous-ui ()
+  (interactive)
+  (setq projectile-project-root "/Users/ben/code/smorgeous/ui")
+  )

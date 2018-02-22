@@ -1,11 +1,29 @@
+;; prefixes:
+;; bt/   anything
+;; btm/  macro
+;; btmi/ minor mode
+;; btma/ major mode
 
 (progn
   (require 'package)
   (package-initialize)
 
-  (load "~/.emacs.d/mine/settings.el")
-  (load "~/.emacs.d/mine/keybindings.el")
-  (load "~/.emacs.d/mine/org-mode-options.el")
+  ;; (load "~/.emacs.d/mine/settings.el")
+  ;; (load "~/.emacs.d/mine/keybindings.el")
+  ;; (load "~/.emacs.d/mine/org-mode-options.el")
+
+  (setq bt/load-v2 nil)
+  (if bt/load-v2
+      (progn
+        (load "~/.emacs.d/mine/settings.el")
+        (load "~/.emacs.d/mine/v2.el")
+        (load "~/.emacs.d/mine/org-mode-options.el")
+        )
+    (progn
+        (load "~/.emacs.d/mine/settings.el")
+        (load "~/.emacs.d/mine/keybindings.el")
+        (load "~/.emacs.d/mine/org-mode-options.el")
+        ))
 
   ;; FIXME only do this in git repos
   ;; (magit-status)
@@ -107,7 +125,7 @@ static char *gnus-pointer[] = {
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (base16-theme org anti-zenburn-theme reverse-theme haskell-mode badger-theme whole-line-or-region smartrep magit highlight-numbers helm-projectile expand-region)))
+    (elm-mode ag helm-ag tuareg base16-theme org anti-zenburn-theme reverse-theme haskell-mode badger-theme whole-line-or-region smartrep magit highlight-numbers helm-projectile expand-region)))
  '(pdf-view-midnight-colors (quote ("#232333" . "#c7c7c7")))
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")
@@ -143,18 +161,25 @@ static char *gnus-pointer[] = {
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :stipple nil :background "color-254" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 1 :width normal :foundry "default" :family "default"))))
- '(helm-selection ((t (:background "yellow" :foreground "black" :underline nil))))
+ '(default ((t (:inherit nil :stipple nil :background "color-255" :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 1 :width normal :foundry "default" :family "default"))))
+ '(helm-selection ((t (:background "color-250" :foreground "color-232" :underline nil :weight bold))))
+ '(helm-separator ((t (:background "color-232" :foreground "color-255"))))
+ '(helm-source-header ((t (:background "color-144" :foreground "white" :weight bold))))
  '(highlight ((t (:background "color-181"))))
+ '(hl-line ((t (:background "color-250"))))
+ '(linum ((t (:background "black" :foreground "color-246"))))
  '(magit-blame-heading ((t (:background "color-255" :foreground "black"))))
  '(magit-diff-added ((t (:background "green" :foreground "#ddffdd"))))
  '(magit-diff-added-highlight ((t (:background "green" :foreground "#cceecc"))))
  '(magit-diff-removed ((t (:background "red" :foreground "#ffdddd"))))
  '(magit-diff-removed-highlight ((t (:background "red" :foreground "#eecccc"))))
- '(mode-line ((t (:background "color-143" :foreground "brightblue" :box nil))))
- '(mode-line-buffer-id ((t (:foreground "black"))))
- '(mode-line-inactive ((t (:background "color-255" :foreground "brightblack" :box nil))))
+ '(mode-line ((t (:background "color-143" :foreground "color-255" :weight bold))))
+ '(mode-line-buffer-id ((t (:foreground "green"))))
+ '(mode-line-inactive ((t (:background "color-252" :foreground "brightblack" :box nil))))
+ '(org-checkbox ((t (:inherit bold :foreground "brightblue"))))
+ '(org-code ((t (:background "black"))))
  '(org-done ((t (:background "green" :foreground "black"))))
  '(org-hide ((t (:foreground "color-254"))))
  '(org-todo ((t (:background "red" :foreground "black"))))
- '(region ((t (:background "color-181")))))
+ '(region ((t (:background "color-181"))))
+ '(tuareg-font-lock-governing-face ((t nil))))

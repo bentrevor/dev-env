@@ -12,10 +12,11 @@
 
 ;; line number options
 ;; (global-linum-mode t)
-(setq linum-format "%4d  ")
+(setq linum-format "%3d ")
 (setq left-fringe 6)
 
 (add-hook 'haskell-mode-hook #'linum-mode)
+(add-hook 'tuareg-mode-hook #'linum-mode)
 (add-hook 'ruby-mode-hook #'linum-mode)
 (add-hook 'paredit-mode-hook #'linum-mode)
 (add-hook 'sh-mode-hook #'linum-mode)
@@ -184,3 +185,5 @@
               (name 30 30 :left :elide) " "
               (mode 6 6 :left :elide) " " filename-and-process)
         (mark " " (name 16 -1) " " filename)))
+
+(require 'dired-x)

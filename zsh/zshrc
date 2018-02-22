@@ -95,7 +95,7 @@ alias tmux='tmux -2' # let tmux use 256 colors
 alias l='ls -lhpG'
 # alias emacs='emacs-snapshot '
 alias e='emacs'
-alias t='tree -C --dirsfirst -I "coverage|build|dist|*srv" '
+alias t='tree -C --dirsfirst -I "coverage|_build|build|dist|*srv|node_modules|elm-stuff" '
 alias t2='t -L 2'
 alias be='bundle exec'
 alias v='vagrant'
@@ -226,3 +226,10 @@ function pss() {
     ps aux | grep -v grep | grep "$process_names"
 }
 
+# OPAM configuration
+. /Users/ben/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
+
+ruby ~/rushh/bin/rushh 
+source ~/rushh/out.sh
+
+source /usr/local/share/gem_home/gem_home.sh
