@@ -4,8 +4,8 @@
 (define-key isearch-mode-map [(control h)] 'isearch-delete-char) ;; C-h to delete while searching
 
 ;; colors
-(load-theme 'base16-apathy t)
-;; (load-theme 'light-soap t)
+;; (load-theme 'base16-apathy t)
+(load-theme 'tsdh-light t)
 (set-face-attribute 'fringe nil :background "#FFF")
 
 (setq ag-highlight-search t)

@@ -539,3 +539,7 @@ F5 again will unset 'selective-display' by setting it to 0."
   (interactive)
   (setq projectile-project-root "/Users/ben/code/smorgeous/ui")
   )
+
+(defun bt/fullscreen-git ()
+
+  )

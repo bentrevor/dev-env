@@ -78,7 +78,7 @@
                              (dotimes (n 10 r)
                                (org-metaup)))
 
-                           (define-key my-keys-minor-mode-map (kbd "M-a") 'beginning-of-org-line)
+                           ; (define-key my-keys-minor-mode-map (kbd "M-a") 'beginning-of-org-line)
                            (define-key my-keys-minor-mode-map (kbd "M-n") 'org-metadown)
                            (define-key my-keys-minor-mode-map (kbd "M-p") 'org-metaup)
                            (define-key my-keys-minor-mode-map (kbd "ESC M-n") 'all-the-way-down)
@@ -90,7 +90,7 @@
                              (org-archive-subtree)
                              )
 
-                           (define-key my-keys-minor-mode-map (kbd "C-x C-x") 'bt/org-archive-all-done)
+                           ; (define-key my-keys-minor-mode-map (kbd "C-x C-x") 'bt/org-archive-all-done)
 
                            (defun bt/org-archive-all-done ()
                              (interactive)
