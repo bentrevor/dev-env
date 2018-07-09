@@ -81,9 +81,11 @@ noremap x "_dl
 " set * to not automatically jump to next word
 nnoremap * ma*`a
 
+" emacs
+nnoremap <C-a> 0
+
 " unmap ex mode, F1 help
 nnoremap Q <nop>
-nnoremap <C-a> <nop>
 nmap <F1> <nop>
 imap <F1> <nop>
 

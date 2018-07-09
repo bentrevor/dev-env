@@ -1,32 +1,18 @@
 (autoload 'org "org" "Org mode." t)
 
-(setq org-tag-alist '(
-                      ;; (:startgroup . nil)
-                      ;; (:endgroup . nil)
-                      ("@home" . ?h)
-                      ("@work" . ?w)
-                      ("@mobile" . ?m)
+(setq org-agenda-files '("~/org/todo.org"))
 
-                      ("lauren" . ?l)
-
-                      ("fun" . ?f)
-                      ("study" . ?s)
-                      ))
-
-(setq org-agenda-files '("~/org/todo.org" "~/org/later.org" "~/org/reference" "~/org/projects/"))
-
-(setq org-archive-location "~/org/old.org_archive")
 (setq org-startup-indented t)             ;; indent tasks and only show one star
 (setq org-log-done nil)                   ;; no timestamp when task moves to DONE
 (setq org-enforce-todo-dependencies t)    ;; can't finish a task when a subtask is incomplete
-;; (setq org-agenda-todo-list-sublevels nil) ;; only show top-level TODAY tasks in agenda todo list
 (setq org-clock-clocktable-default-properties '(:maxlevel 4))
 (setq org-time-clocksum-format '(:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t)) ;; format time to not show days in clock tables
 (setq org-catch-invisible-edits t)        ;; prevent changes to text that is collapsed
+(setq org-archive-location "archives/archive.%s::")
 
 (setq org-todo-keywords
       '((type
-         "TODAY"
+         "TODO"
          "WAITING"
          "|"
          "SKIP"
@@ -37,86 +23,24 @@
 (add-hook 'org-mode-hook (lambda ()
                            (add-hook 'before-save-hook 'org-align-all-tags)
 
-                           (define-key my-keys-minor-mode-map (kbd "M-'")   '(lambda () (interactive)))
+                           (define-key my-keys-minor-mode-map (kbd "C-j") 'org-meta-return)
                            (define-key my-keys-minor-mode-map (kbd "M-RET")   '(lambda () (interactive)))
-                           (define-key my-keys-minor-mode-map (kbd "C-j")   'org-meta-return)
-
-                           (define-key my-keys-minor-mode-map (kbd "M-# C-t")   'org-ctrl-c-ctrl-c)
-
-                           (defun org-journal-entry ()
-                             (interactive)
-                             (end-of-buffer)
-                             (insert "\n\n")
-                             (delete-blank-lines)
-                             (insert "\n** ")
-
-                             (insert-timestamp-with-time)
-                             (insert "\n"))
-
-                           (defun insert-timestamp-with-time ()
-                             (interactive)
-                             (setq current-prefix-arg '(16))      ; C-u C-u
-                             (call-interactively 'org-time-stamp)
-                             )
-
+                           (define-key my-keys-minor-mode-map (kbd "M-p") 'org-metaup)
+                           (define-key my-keys-minor-mode-map (kbd "M-n") 'org-metadown)
+                           ;; this doesn't work with reloading, probably won't be an issue though
+                           (define-key my-keys-minor-mode-map (kbd "M-'")   '(lambda () (interactive)))
 
                            (visual-line-mode)    ;; wrap long lines
 
-                           (defun beginning-of-org-line ()
+                           (defun bt/beginning-of-org-line ()
                              (interactive)
                              (beginning-of-line)
                              (search-forward " ")
                              )
 
-                           (defun all-the-way-down ()
-                             (interactive)
-                             (dotimes (n 10 r)
-                               (org-metadown)))
-
-                           (defun all-the-way-up ()
-                             (interactive)
-                             (dotimes (n 10 r)
-                               (org-metaup)))
-
-                           ; (define-key my-keys-minor-mode-map (kbd "M-a") 'beginning-of-org-line)
-                           (define-key my-keys-minor-mode-map (kbd "M-n") 'org-metadown)
-                           (define-key my-keys-minor-mode-map (kbd "M-p") 'org-metaup)
-                           (define-key my-keys-minor-mode-map (kbd "ESC M-n") 'all-the-way-down)
-                           (define-key my-keys-minor-mode-map (kbd "ESC M-p") 'all-the-way-up)
-
-                           (defun bt/org-archive-next-done ()
-                             (interactive)
-                             (re-search-forward "^\** DONE ")
-                             (org-archive-subtree)
-                             )
-
-                           ; (define-key my-keys-minor-mode-map (kbd "C-x C-x") 'bt/org-archive-all-done)
-
-                           (defun bt/org-archive-all-done ()
-                             (interactive)
-                             (dotimes (n 100 r)
-                               (bt/org-archive-next-done)))
-
-
-                           ;; org-tree-to-indirect-buffer is pretty close to this, but it gets
-                           ;; messed up sometimes and I'm not sure why, so manually copying it back
-                           ;; over seems like the best way to do this
-                           (defun org-subtree-in-new-file ()
-                             (interactive)
-                             (let ((timestamp (concat (number-to-string (cadr (current-time)))
-                                                      (number-to-string (caddr (current-time)))
-                                                      )))
-                               (org-copy-subtree)
-                               (find-file (concat "tmp-" timestamp ".org"))
-                               (yank)
-                               (delete-other-windows)
-                               )
-                             )
-
+                           (define-key my-keys-minor-mode-map (kbd "M-a") 'bt/beginning-of-org-line)
 
                            ;; iterm remaps C-; to M-#
-
-                           ;; fast
                            (define-key my-keys-minor-mode-map (kbd "M-# C-v") 'org-cut-subtree)
                            (define-key my-keys-minor-mode-map (kbd "M-# C-y") 'org-paste-subtree)
 
@@ -126,42 +50,18 @@
                            (define-key my-keys-minor-mode-map (kbd "M-# C-p") 'org-previous-visible-heading)
                            (define-key my-keys-minor-mode-map (kbd "M-# C-n") 'org-next-visible-heading)
 
-                           ;; slow (one-time)
                            (define-key my-keys-minor-mode-map (kbd "M-# B") 'org-promote-subtree)
                            (define-key my-keys-minor-mode-map (kbd "M-# F") 'org-demote-subtree)
                            (define-key my-keys-minor-mode-map (kbd "M-# A") 'org-archive-subtree)
 
-                           (define-key my-keys-minor-mode-map (kbd "M-# c i") 'org-clock-in)
-                           (define-key my-keys-minor-mode-map (kbd "M-# c o") 'org-clock-out)
-                           (define-key my-keys-minor-mode-map (kbd "M-# c g") 'org-clock-goto)
-
-                           (defun bt/org-todo (x)
-                             (org-todo x)
-                             (save-buffer)
-                             )
-
-                           (define-key my-keys-minor-mode-map (kbd "M-# C-k SPC") (lambda () (interactive) (bt/org-todo "")))
-                           (define-key my-keys-minor-mode-map (kbd "M-# C-k t") (lambda () (interactive) (bt/org-todo "TODAY")))
-                           (define-key my-keys-minor-mode-map (kbd "M-# C-k w") (lambda () (interactive) (bt/org-todo "WAITING")))
-                           (define-key my-keys-minor-mode-map (kbd "M-# C-k s") (lambda () (interactive) (bt/org-todo "SKIP")))
-                           (define-key my-keys-minor-mode-map (kbd "M-# C-k d") (lambda () (interactive) (bt/org-todo "DONE")))
-
-
                            (define-key my-keys-minor-mode-map (kbd "M-# C-a") 'org-agenda)
                            (define-key my-keys-minor-mode-map (kbd "M-# a") 'org-agenda)
+
                            (setq org-agenda-custom-commands
                                  '(("k" . "filter by TODO keyword")
-                                   ("kt" todo "TODAY")
+                                   ("kt" todo "TODO")
                                    ("kw" todo "WAITING")
                                    ("kd" todo "DONE")
-
-                                   ("t" . "filter by tag")
-                                   ("th" tags "@home")
-                                   ("tw" tags "@work")
-                                   ("tm" tags "@mobile")
-                                   ("tl" tags "lauren")
-                                   ("tf" tags "fun")
-                                   ("ts" tags "study")
                                    ))
 
                            (smartrep-define-key

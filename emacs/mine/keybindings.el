@@ -177,9 +177,9 @@ F5 again will unset 'selective-display' by setting it to 0."
 (define-key my-keys-minor-mode-map (kbd "M-e")       'move-end-of-line)
 
 ;; C-x
-(define-key my-keys-minor-mode-map (kbd "C-x f")     'helm-projectile-find-file)
-(define-key my-keys-minor-mode-map (kbd "C-x C-f")   'helm-projectile-find-file)
-(define-key my-keys-minor-mode-map (kbd "C-x M-f")   'find-file)
+; (define-key my-keys-minor-mode-map (kbd "C-x f")     'helm-projectile-find-file)
+; (define-key my-keys-minor-mode-map (kbd "C-x C-f")   'helm-projectile-find-file)
+; (define-key my-keys-minor-mode-map (kbd "C-x M-f")   'find-file)
 (define-key my-keys-minor-mode-map (kbd "C-x z")     'delete-other-windows)
 (define-key my-keys-minor-mode-map (kbd "C-x /")     'winner-undo)
 (define-key my-keys-minor-mode-map (kbd "C-x \\")    'split-window-right)
@@ -201,6 +201,8 @@ F5 again will unset 'selective-display' by setting it to 0."
 (define-key my-keys-minor-mode-map (kbd "<backtab>") 'hippie-expand)
 (define-key my-keys-minor-mode-map (kbd "M-'")       'bt/whole-line-or-region-comment-dwim)
 (define-key my-keys-minor-mode-map (kbd "C-x u")     'browse-url-at-point)
+
+(define-key help-mode-map (kbd "<backtab>") 'backward-button)
 
 (defun bt/whole-line-or-region-comment-dwim ()
   (interactive)
@@ -391,6 +393,7 @@ F5 again will unset 'selective-display' by setting it to 0."
 (define-key my-keys-minor-mode-map (kbd "M-; e i") 'ibuffer)
 (define-key my-keys-minor-mode-map (kbd "M-; e SPC") (lambda () (interactive) (message " C-j: Find File (keeping session)\nProjectile files") (helm-projectile-find-file)))
 (define-key my-keys-minor-mode-map (kbd "M-; e RET") (lambda () (interactive) (revert-buffer :ignore-auto :noconfirm)))
+(define-key my-keys-minor-mode-map (kbd "M-; e f") 'find-file)
 (define-key my-keys-minor-mode-map (kbd "M-; e d") 'dired-jump)
 
 (define-key my-keys-minor-mode-map (kbd "M-; s s")     'replace-string)
@@ -541,5 +544,41 @@ F5 again will unset 'selective-display' by setting it to 0."
   )
 
 (defun bt/fullscreen-git ()
-
+  (interactive)
+  (magit-status)
+  (delete-other-windows)
+  (magit-process-buffer)
+  (other-window 1)
   )
+
+(define-key my-keys-minor-mode-map (kbd "M-g M-g") 'bt/fullscreen-git)
+
+(defun bt/cp-show (s)
+  (shell-command-to-string (concat "echo -n " s "| pbcopy"))
+  (message (concat "copied '" s "'"))
+  )
+
+(defun bt/buffer-name-from-root()
+  (interactive)
+  (replace-regexp-in-string (regexp-quote (projectile-project-root)) "" (buffer-file-name) nil 'literal))
+
+(defun bt/cp-show-filename ()
+  (interactive)
+  (bt/cp-show (bt/buffer-name-from-root)))
+
+(defun bt/cp-show-full-filename ()
+  (interactive)
+  (bt/cp-show (buffer-file-name)))
+
+(defun bt/show-filename ()
+  (interactive)
+  (message (bt/buffer-name-from-root)))
+
+(defun bt/show-full-filename ()
+  (interactive)
+  (message (buffer-file-name)))
+
+(define-key my-keys-minor-mode-map (kbd "C-x C-b c") 'bt/cp-show-filename)
+(define-key my-keys-minor-mode-map (kbd "C-x C-b C") 'bt/cp-show-full-filename)
+(define-key my-keys-minor-mode-map (kbd "C-x C-b s") 'bt/show-filename)
+(define-key my-keys-minor-mode-map (kbd "C-x C-b S") 'bt/show-full-filename)
