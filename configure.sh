@@ -11,8 +11,8 @@ function symlink() {
 symlink /home/vagrant/env/emacs /home/vagrant/.emacs.d
 
 symlink /home/vagrant/env/zsh /home/vagrant/.zsh
-symlink /home/vagrant/zsh/zshrc /home/vagrant/.zshrc
-symlink /home/vagrant/zsh/zshenv /home/vagrant/.zshenv
+symlink /home/vagrant/.zsh/zshrc /home/vagrant/.zshrc
+symlink /home/vagrant/.zsh/zshenv /home/vagrant/.zshenv
 
 symlink /home/vagrant/env/dotfiles/vimrc /home/vagrant/.vimrc
 symlink /home/vagrant/env/dotfiles/tmux.conf /home/vagrant/.tmux.conf
