@@ -1,5 +1,5 @@
 [user]
-  name = Ben Trevor
+  name = Benjamin Trevor
   email = benjamin.trevor@gmail.com
 
 [core]
@@ -18,8 +18,14 @@
 [alias]
   st = status
   co = checkout
+  cp = cherry-pick
   br = branch
+  rl = reflog --date=iso
+  sha = rev-list -1
+
   amend = commit --amend --no-edit
+  amendA = !git add -A && git commit --amend --no-edit
+
   l = log -10 --graph --date=short --format=format:'%C(blue)%h%C(white) %C(240)- %C(white)%s%C(240) -- %an, %ad'
   lb = log -10 --graph --date=short --format=format:'%C(blue)%h%C(white) %C(green)%d %C(white)%s%C(240) -- %an, %ad'
   ll = log --graph --date=short --format=format:'%C(blue)%h%C(white) %C(240)- %C(white)%s%C(240) -- %an, %ad'

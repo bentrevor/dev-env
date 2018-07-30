@@ -57,38 +57,77 @@ try_source /usr/local/share/gem_home/gem_home.sh
 
 
 ### Prompt ###
+blk='\e[0;30m' # Black - Regular
+red='\e[0;31m' # Red
+grn='\e[0;32m' # Green
+yel='\e[0;33m' # Yellow
+blu='\e[0;34m' # Blue
+mag='\e[0;35m' # Magenta
+cyn='\e[0;36m' # Cyan
+wht='\e[0;37m' # White
+blk_bold='\e[1;30m' # Black - Bold
+red_bold='\e[1;31m' # Red
+grn_bold='\e[1;32m' # Green
+yel_bold='\e[1;33m' # Yellow
+blu_bold='\e[1;34m' # Blue
+mag_bold='\e[1;35m' # Magenta
+cyn_bold='\e[1;36m' # Cyan
+wht_bold='\e[1;37m' # White
+blk_ul='\e[4;30m' # Black - Underline
+red_ul='\e[4;31m' # Red
+grn_ul='\e[4;32m' # Green
+yel_ul='\e[4;33m' # Yellow
+blu_ul='\e[4;34m' # Blue
+mag_ul='\e[4;35m' # Magenta
+cyn_ul='\e[4;36m' # Cyan
+wht_ul='\e[4;37m' # White
+blk_bg='\e[40m'   # Black - Background
+red_bg='\e[41m'   # Red
+grn_bg='\e[42m'   # Green
+yel_bg='\e[43m'   # Yellow
+blu_bg='\e[44m'   # Blue
+mag_bg='\e[45m'   # Magenta
+cyn_bg='\e[46m'   # Cyan
+wht_bg='\e[47m'   # White
+plain='\e[0m'    # Text Reset
+
 function in_git_repo() { git rev-parse 2> /dev/null }
 
-function linux_os() { [[ $(uname) == "Linux" ]] }
-function mac_os() { [[ $(uname) == "Darwin" ]] }
+function ps1_() {
+        if in_git_repo; then
+                ps_git_branch="${cyn}$(git symbolic-ref HEAD --short)${plain}"
+        else
+                ps_git_branch=""
+        fi
 
-if linux_os; then
-    prompt_branch_color='green'
-    prompt_path_color='blue'
-else
-    prompt_branch_color='red'
-    prompt_path_color='magenta'
-fi
+        if type chruby > /dev/null; then
+                ps_ruby_version="${red}$(chruby | grep \* | sed 's/.* //g')${plain}"
+        else
+                ps_ruby_version=""
+        fi
 
-function current_dir()    { echo "[%{$fg_bold[$prompt_path_color]%}%~%{$reset_color%}]" }
-function current_branch() {
-    if in_git_repo; then
-        local branch_name=$(git symbolic-ref HEAD --short)
-        echo "[%{$fg_bold[$prompt_branch_color]%}$branch_name%{$reset_color%}]"
-    else
-        echo ""
-    fi
+        ps_env_var_list="${ps_ruby_version}${ps_git_branch}"
+
+        if [[ -z $ps_env_var_list ]]; then
+                ps_env_vars=""
+        else
+                ps_env_vars="| ${ps_ruby_version}${ps_git_branch}"
+        fi
+
+        ps_dir="${blu_ul}%~${plain}"
+        ps_timestamp="${mag}$(date +'%H:%M:%S')${plain}"
+
+        echo "${ps_timestamp} ${ps_dir} ${ps_env_vars}"
 }
 
-export PS1='$(current_branch)$(current_dir) '
+export PS1='$(ps1_)
+▶ '
+
+
 
 
 ### Aliases ###
-if linux_os; then
-    alias ls='ls --color'
-else
-    alias ls='ls -G'
-fi
+alias ls='ls --color'
 alias grep='grep --color=auto'
 alias sudo='sudo ' # make aliases work with "sudo"
 alias tmux='tmux -2' # let tmux use 256 colors
@@ -109,41 +148,16 @@ function git-ssh() {
     echo "Host github.com\n  StrictHostKeyChecking no" >> ~/.ssh/config
 }
 
-function dull_red()     { echo "$(tput setaf 1)$1$(tput sgr0)" }
-function dull_green()   { echo "$(tput setaf 2)$1$(tput sgr0)" }
-function dull_yellow()  { echo "$(tput setaf 3)$1$(tput sgr0)" }
-function dull_blue()    { echo "$(tput setaf 4)$1$(tput sgr0)" }
-function dull_magenta() { echo "$(tput setaf 5)$1$(tput sgr0)" }
-function dull_cyan()    { echo "$(tput setaf 6)$1$(tput sgr0)" }
-function dull_white()   { echo "$(tput setaf 7)$1$(tput sgr0)" }
-function dull_black()   { echo "$(tput setaf 8)$1$(tput sgr0)" }
-function hot_red()      { echo "$(tput setaf 9)$1$(tput sgr0)" }
-function hot_green()    { echo "$(tput setaf 10)$1$(tput sgr0)" }
-function hot_yellow()   { echo "$(tput setaf 11)$1$(tput sgr0)" }
-function hot_blue()     { echo "$(tput setaf 12)$1$(tput sgr0)" }
-function hot_magenta()  { echo "$(tput setaf 13)$1$(tput sgr0)" }
-function hot_cyan()     { echo "$(tput setaf 14)$1$(tput sgr0)" }
-function hot_white()    { echo "$(tput setaf 15)$1$(tput sgr0)" }
-function hot_black()    { echo "$(tput setaf 16)$1$(tput sgr0)" }
-
 # for debugging
 function show-color-functions() {
-    echo "dull_red:     \t $(dull_red     'jump in the urinal')"
-    echo "dull_green:   \t $(dull_green   'and stand on your head')"
-    echo "dull_yellow:  \t $(dull_yellow  'im the one thats alive')"
-    echo "dull_blue:    \t $(dull_blue    'youre all dead')"
-    echo "dull_magenta: \t $(dull_magenta 'lean over the bowl')"
-    echo "dull_cyan:    \t $(dull_cyan    'and then take a dive')"
-    echo "dull_white:   \t $(dull_white   'all of you are dead')"
-    echo "dull_black:   \t $(dull_black   'i am alive')\n"
-    echo "hot_red:      \t $(hot_red      'jump in the urinal')"
-    echo "hot_green:    \t $(hot_green    'and stand on your head')"
-    echo "hot_yellow:   \t $(hot_yellow   'im the one thats alive')"
-    echo "hot_blue:     \t $(hot_blue     'youre all dead')"
-    echo "hot_magenta:  \t $(hot_magenta  'lean over the bowl')"
-    echo "hot_cyan:     \t $(hot_cyan     'and then take a dive')"
-    echo "hot_white:    \t $(hot_white    'all of you are dead')"
-    echo "hot_black:    \t $(hot_black    'i am alive')\n"
+    echo "dull_red:     \t ${red}'jump in the urinal'${resc}"
+    echo "dull_green:   \t ${grn}'and stand on your head'${resc}"
+    echo "dull_yellow:  \t ${yel}'im the one thats alive'${resc}"
+    echo "dull_blue:    \t ${blu}'youre all dead'${resc}"
+    echo "dull_magenta: \t ${mag}'lean over the bowl'${resc}"
+    echo "dull_cyan:    \t ${cyn}'and then take a dive'${resc}"
+    echo "dull_white:   \t ${wht}'all of you are dead'${resc}"
+    echo "dull_black:   \t ${blk}'i am alive'${resc}\n"
 }
 
 #   Originally from https://github.com/mbadolato/iTerm2-Color-Schemes
@@ -164,21 +178,6 @@ function show-terminal-colors() {
        echo;
     done
     echo
-}
-
-function sha() {
-    local commit
-
-    if [ -z $1 ]; then
-        commit=HEAD
-    else
-        commit=$1
-    fi;
-
-    local gitsha=$(git rev-list -1 $commit)
-
-    echo -n $gitsha | pbcopy
-    echo "pbcopied $gitsha"
 }
 
 function shrug() {
