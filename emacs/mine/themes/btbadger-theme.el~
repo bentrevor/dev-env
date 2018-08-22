@@ -1,0 +1,19 @@
+(deftheme btt
+  "simple theme that uses terminal's colors, mostly copied from badger-theme.el")
+
+;; Not a bad idea to define a palette...
+  ;; Set faces
+(custom-theme-set-faces
+ 'btt
+
+ '(default ((t (:foreground "white" :background "black"))))
+ '(cursor  ((t (:background "blue"))))
+ '(fringe  ((t (:background "green"))))
+ )
+
+;; Set variables
+;; (custom-theme-set-variables
+;;  'name ;; again specify the same theme name...
+;;  '(any-variable EXPR)
+
+(provide-theme 'btt)

@@ -57,6 +57,9 @@
                              (dotimes (n 10 r)
                                (org-metaup)))
 
+                           (define-key my-keys-minor-mode-map (kbd "M-# C-j") 'org-meta-return)
+                           (define-key my-keys-minor-mode-map (kbd "C-j") 'org-meta-return)
+
                            (define-key my-keys-minor-mode-map (kbd "M-a") 'beginning-of-org-line)
                            (define-key my-keys-minor-mode-map (kbd "M-n") 'org-metadown)
                            (define-key my-keys-minor-mode-map (kbd "M-p") 'org-metaup)

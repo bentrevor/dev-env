@@ -50,6 +50,8 @@ function try_source() {
 }
 
 try_source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+try_source $HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=244'
 try_source $HOME/.zsh/
 try_source /usr/local/share/chruby/chruby.sh
 try_source /usr/local/share/chruby/auto.sh
@@ -111,17 +113,17 @@ function ps1_() {
         if [[ -z $ps_env_var_list ]]; then
                 ps_env_vars=""
         else
-                ps_env_vars="| ${ps_ruby_version}${ps_git_branch}"
+                ps_env_vars="${ps_ruby_version}${ps_git_branch}"
         fi
 
         ps_dir="${blu_ul}%~${plain}"
         ps_timestamp="${mag}$(date +'%H:%M:%S')${plain}"
 
-        echo "${ps_timestamp} ${ps_dir} ${ps_env_vars}"
+        echo "${ps_timestamp} ${ps_dir} =+= ${ps_env_vars}"
 }
 
 export PS1='$(ps1_)
-▶ '
+я '
 
 
 
@@ -139,6 +141,7 @@ alias t='tree -C --dirsfirst -I "coverage|build|dist|*srv|elm-stuff" '
 alias t2='t -L 2'
 alias be='bundle exec'
 alias v='vagrant'
+alias dk='docker'
 
 ### Functions ###
 function show-path() { echo $PATH | tr ':' '\n' }
@@ -150,14 +153,24 @@ function git-ssh() {
 
 # for debugging
 function show-color-functions() {
-    echo "dull_red:     \t ${red}'jump in the urinal'${resc}"
-    echo "dull_green:   \t ${grn}'and stand on your head'${resc}"
-    echo "dull_yellow:  \t ${yel}'im the one thats alive'${resc}"
-    echo "dull_blue:    \t ${blu}'youre all dead'${resc}"
-    echo "dull_magenta: \t ${mag}'lean over the bowl'${resc}"
-    echo "dull_cyan:    \t ${cyn}'and then take a dive'${resc}"
-    echo "dull_white:   \t ${wht}'all of you are dead'${resc}"
-    echo "dull_black:   \t ${blk}'i am alive'${resc}\n"
+    echo "red:     \t ${red}'jump in the urinal'${plain}"
+    echo "green:   \t ${grn}'and stand on your head'${plain}"
+    echo "yellow:  \t ${yel}'im the one thats alive'${plain}"
+    echo "blue:    \t ${blu}'youre all dead'${plain}"
+    echo "magenta: \t ${mag}'lean over the bowl'${plain}"
+    echo "cyan:    \t ${cyn}'and then take a dive'${plain}"
+    echo "white:   \t ${wht}'all of you are dead'${plain}"
+    echo "black:   \t ${blk}'i am alive'${plain}\n"
+
+    echo "bold red:     \t ${red_bold}'jump in the urinal'${plain}"
+    echo "bold green:   \t ${grn_bold}'and stand on your head'${plain}"
+    echo "bold yellow:  \t ${yel_bold}'im the one thats alive'${plain}"
+    echo "bold blue:    \t ${blu_bold}'youre all dead'${plain}"
+    echo "bold magenta: \t ${mag_bold}'lean over the bowl'${plain}"
+    echo "bold cyan:    \t ${cyn_bold}'and then take a dive'${plain}"
+    echo "bold white:   \t ${wht_bold}'all of you are dead'${plain}"
+    echo "bold black:   \t ${blk_bold}'i am alive'${plain}\n"
+
 }
 
 #   Originally from https://github.com/mbadolato/iTerm2-Color-Schemes

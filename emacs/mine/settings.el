@@ -1,18 +1,18 @@
-(add-to-list 'package-archives       '("melpa" . "http://melpa.milkbox.net/packages/") t)
+;;(add-to-list 'package-archives       '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (add-to-list 'auto-mode-alist        '("\\.rb$" . ruby-mode))
 (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
 (define-key isearch-mode-map [(control h)] 'isearch-delete-char) ;; C-h to delete while searching
 
 ;; colors
-(load-theme 'base16-apathy t)
+(load-theme 'btcolor t)
 ;; (load-theme 'light-soap t)
-(set-face-attribute 'fringe nil :background "#FFF")
+;; (set-face-attribute 'fringe nil :background "#FFF")
 
 (setq ag-highlight-search t)
 
 ;; line number options
 ;; (global-linum-mode t)
-(setq linum-format "%4d  ")
+(setq linum-format "%4d│")
 (setq left-fringe 6)
 
 (add-hook 'haskell-mode-hook #'linum-mode)
@@ -24,14 +24,6 @@
 (add-hook 'html-mode-hook #'linum-mode)
 (add-hook 'yaml-mode-hook #'linum-mode)
 (add-hook 'elm-mode-hook #'linum-mode)
-
-(add-hook 'linum-mode-hook 'fix-linum-colors)
-
-(defun fix-linum-colors ()
-  (set-face-foreground 'linum "white")
-  (set-face-background 'linum "black")
-  )
-
 
 
 
@@ -65,6 +57,12 @@
 (setq echo-keystrokes 0.001)                            ;; like vim's showcmd
 (setq require-final-newline nil)                        ;; don't add newline at end of file
 (setq elm-format-on-save t)
+
+;; format for vertical borders
+(set-display-table-slot standard-display-table
+                        'vertical-border
+                        (make-glyph-code ?║))
+
 
 ;;;;;;;;;;;;;;;
 ;;

@@ -168,7 +168,7 @@ F5 again will unset 'selective-display' by setting it to 0."
 (define-key my-keys-minor-mode-map (kbd "M-x")       'helm-M-x)
 (define-key my-keys-minor-mode-map (kbd "ESC M-x")   'execute-extended-command) ;; original M-x
 
-(define-key key-translation-map (kbd "M-h") [f1])
+(define-key key-translation-map (kbd "M-; h") [f1])
 
 (define-key my-keys-minor-mode-map (kbd "M-a")       'back-to-indentation)
 (add-hook 'org-mode-hook (lambda () (local-unset-key (kbd "M-a"))))
@@ -378,10 +378,12 @@ F5 again will unset 'selective-display' by setting it to 0."
 (define-key my-keys-minor-mode-map (kbd "M-; d p") (lambda () (interactive) (bt/vim-copy-around ?p) (yank-and-indent)))
 (define-key my-keys-minor-mode-map (kbd "M-; c p") (lambda () (interactive) (mark-paragraph) (whole-line-or-region-comment-dwim "")))
 
-(define-key my-keys-minor-mode-map (kbd "M-; b") 'switch-to-buffer)
-(define-key my-keys-minor-mode-map (kbd "M-; i") 'ibuffer)
+(define-key my-keys-minor-mode-map (kbd "M-; e j") 'switch-to-buffer)
+(define-key my-keys-minor-mode-map (kbd "M-; e i") 'ibuffer)
 (define-key my-keys-minor-mode-map (kbd "M-; e SPC") (lambda () (interactive) (message " C-j: Find File (keeping session)\nProjectile files") (helm-projectile-find-file)))
 (define-key my-keys-minor-mode-map (kbd "M-; e RET") (lambda () (interactive) (revert-buffer :ignore-auto :noconfirm)))
+(define-key my-keys-minor-mode-map (kbd "M-; e d") 'dired-jump)
+(define-key my-keys-minor-mode-map (kbd "M-; e f") 'find-file)
 (define-key my-keys-minor-mode-map (kbd "M-; s s")     'replace-string)
 (define-key my-keys-minor-mode-map (kbd "M-; s r")     'replace-regexp)
 (define-key my-keys-minor-mode-map (kbd "M-; s q s")   'query-replace)
