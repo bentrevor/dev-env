@@ -1,21 +1,13 @@
 (autoload 'org "org" "Org mode." t)
 
-(setq org-agenda-files '("~/org/todo.org"))
+(setq bt/org-dir "~/shared/org/")
+(defun bt/org-path (x) (concat bt/org-dir x))
 
-(setq org-archive-location "~/org/old.org_archive")
-(setq org-startup-indented t)             ;; indent tasks and only show one star
-(setq org-log-done nil)                   ;; no timestamp when task moves to DONE
-(setq org-enforce-todo-dependencies t)    ;; can't finish a task when a subtask is incomplete
-;; (setq org-agenda-todo-list-sublevels nil) ;; only show top-level TODO tasks in agenda todo list
-(setq org-clock-clocktable-default-properties '(:maxlevel 4))
-(setq org-time-clocksum-format '(:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t)) ;; format time to not show days in clock tables
+(setq org-agenda-files (bt/org-path "todo.org"))
+(setq org-archive-location (bt/org-path "archives/archive.%s::"))
 
-
-;; (setq org-tags-exclude-from-inheritance '("todo"))
-(setq org-todo-keywords
-      '((type "TODO" "LIST" "|" "SKIP" "DONE")))
-
-(add-hook 'org-after-todo-statistics-hook 'org-summary-todo)
+(setq org-startup-indented t)      ;; indent tasks and only show one star
+(setq org-catch-invisible-edits t) ;; don't allow edits to collapsed parts of a buffer
 
 (add-hook 'org-mode-hook (lambda ()
                            (add-hook 'before-save-hook 'org-align-all-tags)
@@ -60,7 +52,7 @@
                            (define-key my-keys-minor-mode-map (kbd "M-# C-j") 'org-meta-return)
                            (define-key my-keys-minor-mode-map (kbd "C-j") 'org-meta-return)
 
-                           (define-key my-keys-minor-mode-map (kbd "M-a") 'beginning-of-org-line)
+                           (define-key my-keys-minor-mode-map (kbd "M-# C-a") 'beginning-of-org-line)
                            (define-key my-keys-minor-mode-map (kbd "M-n") 'org-metadown)
                            (define-key my-keys-minor-mode-map (kbd "M-p") 'org-metaup)
                            (define-key my-keys-minor-mode-map (kbd "ESC M-n") 'all-the-way-down)

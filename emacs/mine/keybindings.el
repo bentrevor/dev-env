@@ -1,5 +1,4 @@
 ;; aliases
-(defalias 'git 'magit-status)
 (defalias 'blame 'magit-blame)
 
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
@@ -15,7 +14,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-x a g s")   'ag-project)
 (define-key my-keys-minor-mode-map (kbd "C-x a g r")   'ag-project-regexp)
 
-(defun kill-to-string (target)
+(defun bt/kill-to-string (target)
   (interactive "skill to string: ")
   (set-mark-command nil)
   (search-forward target)
@@ -154,6 +153,28 @@ F5 again will unset 'selective-display' by setting it to 0."
   )
 
 
+(defun bt/drag-line-down ()
+  (interactive)
+  (whole-line-or-region-kill-region 1)
+  (move-end-of-line 1)
+  (forward-char)
+  (yank)
+  (previous-line)
+  )
+
+(defun bt/drag-line-up ()
+  (interactive)
+  (whole-line-or-region-kill-region 1)
+  (move-beginning-of-line 1)
+  (previous-line)
+  (yank)
+  (previous-line)
+  )
+
+
+(define-key my-keys-minor-mode-map (kbd "M-p") 'bt/drag-line-up)
+(define-key my-keys-minor-mode-map (kbd "M-n") 'bt/drag-line-down)
+
 ;; need this so redo can work
 (define-key my-keys-minor-mode-map (kbd "C-/")       'undo-tree-undo)
 
@@ -171,8 +192,6 @@ F5 again will unset 'selective-display' by setting it to 0."
 (define-key key-translation-map (kbd "M-; h") [f1])
 
 (define-key my-keys-minor-mode-map (kbd "M-a")       'back-to-indentation)
-(add-hook 'org-mode-hook (lambda () (local-unset-key (kbd "M-a"))))
-
 (define-key my-keys-minor-mode-map (kbd "M-e")       'move-end-of-line)
 
 ;; C-x
@@ -221,8 +240,6 @@ F5 again will unset 'selective-display' by setting it to 0."
                sgml-skip-tag-forward
                nil))
 
-
-
 (add-hook 'nxml-mode-hook 'hs-minor-mode)
 
 ;; optional key bindings, easier than hs defaults
@@ -234,7 +251,7 @@ F5 again will unset 'selective-display' by setting it to 0."
 ;; )
 
 ;; vim.el
-(define-key my-keys-minor-mode-map (kbd "M-j") 'join-line-below)
+;; (define-key my-keys-minor-mode-map (kbd "M-j") 'join-line-below)
 (defun join-line-below ()
   "Like 'J' in vim."
   (interactive)

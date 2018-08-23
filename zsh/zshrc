@@ -97,7 +97,7 @@ function in_git_repo() { git rev-parse 2> /dev/null }
 
 function ps1_() {
         if in_git_repo; then
-                ps_git_branch="${cyn}$(git symbolic-ref HEAD --short)${plain}"
+                ps_git_branch="${cyn}$(git rev-parse --abbrev-ref HEAD)${plain}"
         else
                 ps_git_branch=""
         fi

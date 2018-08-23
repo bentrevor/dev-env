@@ -24,6 +24,8 @@
 (add-hook 'html-mode-hook #'linum-mode)
 (add-hook 'yaml-mode-hook #'linum-mode)
 (add-hook 'elm-mode-hook #'linum-mode)
+(add-hook 'lisp-mode-hook #'linum-mode)
+(add-hook 'emacs-lisp-mode-hook #'linum-mode)
 
 
 

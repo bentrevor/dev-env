@@ -1,3 +1,7 @@
+;;; Local Variables:
+;;; eval: (rainbow-mode)
+;;; End:
+
 (deftheme btcolor
   "simple theme that uses terminal's colors, mostly copied from badger-theme.el")
 
@@ -26,7 +30,7 @@
     ("brightcyan" . "brightcyan")
 
     ("magenta" . "magenta")
-    ("brown" . "brightmagenta")
+    ("brightmagenta" . "brightmagenta")
 
     ("darkgray" . "color-235")
     ("bggray" . "color-236")
