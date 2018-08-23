@@ -93,17 +93,31 @@ cyn_bg='\e[46m'   # Cyan
 wht_bg='\e[47m'   # White
 plain='\e[0m'    # Text Reset
 
+# osx
+ps_char=''
+ps_branch_color=$grn
+ps_ruby_color=$blu
+ps_dir_color=$yel_ul
+ps_time_color=$red
+
+# linux
+# ps_char='я'
+# ps_branch_color=$yel
+# ps_ruby_color=$red
+# ps_dir_color=$blu_ul
+# ps_time_color=$cyn
+
 function in_git_repo() { git rev-parse 2> /dev/null }
 
 function ps1_() {
         if in_git_repo; then
-                ps_git_branch="${cyn}$(git rev-parse --abbrev-ref HEAD)${plain}"
+                ps_git_branch="${ps_branch_color}$(git rev-parse --abbrev-ref HEAD)${plain}"
         else
                 ps_git_branch=""
         fi
 
         if type chruby > /dev/null; then
-                ps_ruby_version="${red}$(chruby | grep \* | sed 's/.* //g')${plain}"
+                ps_ruby_version="${ps_ruby_color}$(chruby | grep \* | sed 's/.* //g')${plain}"
         else
                 ps_ruby_version=""
         fi
@@ -113,17 +127,17 @@ function ps1_() {
         if [[ -z $ps_env_var_list ]]; then
                 ps_env_vars=""
         else
-                ps_env_vars="${ps_ruby_version}${ps_git_branch}"
+                ps_env_vars="${ps_ruby_version} ${ps_git_branch}"
         fi
 
-        ps_dir="${blu_ul}%~${plain}"
-        ps_timestamp="${mag}$(date +'%H:%M:%S')${plain}"
+        ps_dir="${ps_dir_color}%~${plain}"
+        ps_timestamp="${ps_time_color}$(date +'%H:%M:%S')${plain}"
 
         echo "${ps_timestamp} ${ps_dir} =+= ${ps_env_vars}"
 }
 
 export PS1='$(ps1_)
-я '
+$ps_char '
 
 
 
@@ -238,4 +252,3 @@ function pss() {
     local process_names=$(echo $@ | sed 's/ /\\|/g')
     ps aux | grep -v grep | grep "$process_names"
 }
-

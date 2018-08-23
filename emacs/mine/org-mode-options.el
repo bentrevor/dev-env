@@ -134,6 +134,9 @@
 
 
 
+                           (define-key my-keys-minor-mode-map (kbd "C-j") 'org-meta-return)
+
+
                            ;; iterm remaps C-; to M-#
                            (define-key my-keys-minor-mode-map (kbd "M-# c i") 'org-clock-in)
                            (define-key my-keys-minor-mode-map (kbd "M-# c o") 'org-clock-out)
