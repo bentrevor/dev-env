@@ -66,9 +66,9 @@ Also bind `class' to ((class color) (min-colors 89))."
   `(success ((t (:foreground ,green :weight bold))))
   `(warning ((t (:foreground ,red :weight bold))))
 
-  `(mode-line ((t (:background ,blue :foreground ,black ))))
+  `(mode-line ((t (:background ,green :foreground ,black ))))
   `(mode-line-inactive ((t (:background ,gray :foreground ,black ))))
-  `(mode-line-buffer-id ((t (:foreground ,brightyellow :weight bold))))
+  `(mode-line-buffer-id ((t (:foreground ,brightblack :weight bold))))
   `(minibuffer-prompt ((t (:foreground ,blue))))
 
   `(font-lock-builtin-face ((t (:foreground ,brightblue))))
@@ -89,6 +89,16 @@ Also bind `class' to ((class color) (min-colors 89))."
 
   `(magit-diff-removed-highlight ((t (:background ,brightred :foreground ,black))))
   `(magit-diff-added-highlight ((t (:background ,brightgreen :foreground ,black))))
+
+  `(outline-1 ((t (:foreground ,red))))
+  `(outline-2 ((t (:foreground ,green))))
+  `(outline-3 ((t (:foreground ,magenta))))
+  `(outline-4 ((t (:foreground ,blue))))
+  `(outline-5 ((t (:foreground ,brightred))))
+  `(outline-6 ((t (:foreground ,brightgreen))))
+  `(outline-7 ((t (:foreground ,brightmagenta))))
+  `(outline-8 ((t (:foreground ,brightblue))))
+
 
   ))
 

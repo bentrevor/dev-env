@@ -30,65 +30,20 @@
                              (call-interactively 'org-time-stamp)
                              )
 
-
                            (visual-line-mode)    ;; wrap long lines
 
-                           (defun beginning-of-org-line ()
+                           (defun bt/beginning-of-org-line ()
                              (interactive)
                              (beginning-of-line)
                              (search-forward " ")
                              )
 
-                           (defun all-the-way-down ()
-                             (interactive)
-                             (dotimes (n 10 r)
-                               (org-metadown)))
-
-                           (defun all-the-way-up ()
-                             (interactive)
-                             (dotimes (n 10 r)
-                               (org-metaup)))
-
                            (define-key my-keys-minor-mode-map (kbd "M-# C-j") 'org-meta-return)
                            (define-key my-keys-minor-mode-map (kbd "C-j") 'org-meta-return)
 
-                           (define-key my-keys-minor-mode-map (kbd "M-# C-a") 'beginning-of-org-line)
+                           (define-key my-keys-minor-mode-map (kbd "M-# C-a") 'bt/beginning-of-org-line)
                            (define-key my-keys-minor-mode-map (kbd "M-n") 'org-metadown)
                            (define-key my-keys-minor-mode-map (kbd "M-p") 'org-metaup)
-                           (define-key my-keys-minor-mode-map (kbd "ESC M-n") 'all-the-way-down)
-                           (define-key my-keys-minor-mode-map (kbd "ESC M-p") 'all-the-way-up)
-
-                           (defun bt/org-archive-next-done ()
-                             (interactive)
-                             (re-search-forward "^\** DONE ")
-                             (org-archive-subtree)
-                             )
-
-                           (define-key my-keys-minor-mode-map (kbd "C-x C-x") 'bt/org-archive-all-done)
-
-                           (defun bt/org-archive-all-done ()
-                             (interactive)
-                             (dotimes (n 100 r)
-                               (bt/org-archive-next-done)))
-
-
-
-
-                           ;; these are basically the same as org commands that can be run with C-c
-                           ;; (define-key my-keys-minor-mode-map (kbd "M-# /") 'org-sparse-tree)
-
-                           ;; TODO should defadvice this
-                           (defun todo-checkbox ()
-                             (interactive)
-                             (org-todo "TODO")
-                             (beginning-of-line)
-                             (forward-word)
-                             (insert " [/]")
-                             (backward-char)
-                             (org-ctrl-c-ctrl-c)
-                             )
-
-                           ;; (define-key my-keys-minor-mode-map (kbd "C-\\ /") 'todo-checkbox)
 
                            (defun insert-checkbox-item-on-next-line ()
                              (interactive)

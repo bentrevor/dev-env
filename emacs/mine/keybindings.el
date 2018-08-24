@@ -3,8 +3,17 @@
 
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
-
 ;; keybindings.el
+(defun bt/git ()
+  (interactive)
+  (magit-status)
+  (delete-other-windows)
+  (magit-process-buffer)
+  (other-window 1)
+  )
+
+(define-key my-keys-minor-mode-map (kbd "M-g M-g") 'bt/git)
+
 (define-key my-keys-minor-mode-map (kbd "C-x C-y")   'pbcopy)
 (defun pbcopy ()
   (interactive)
