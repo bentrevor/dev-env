@@ -143,7 +143,7 @@ $ps_char '
 
 
 ### Aliases ###
-alias ls='ls --color'
+# alias ls='ls --color'
 alias grep='grep --color=auto'
 alias sudo='sudo ' # make aliases work with "sudo"
 alias tmux='tmux -2' # let tmux use 256 colors
