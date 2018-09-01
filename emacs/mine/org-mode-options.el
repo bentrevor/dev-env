@@ -8,6 +8,7 @@
 
 (setq org-startup-indented t)      ;; indent tasks and only show one star
 (setq org-catch-invisible-edits t) ;; don't allow edits to collapsed parts of a buffer
+(setq org-startup-folded 'content) ;; show all headings at startup
 
 (add-hook 'org-mode-hook (lambda ()
                            (add-hook 'before-save-hook 'org-align-all-tags)
@@ -70,34 +71,10 @@
                                ))
 
 
-                           ;; (define-key my-keys-minor-mode-map (kbd "C-\\ [") 'dwim-insert-checkbox-item)
-
-                           ;; org-tree-to-indirect-buffer is pretty close to this, but it gets
-                           ;; messed up sometimes and I'm not sure why, so manually copying it back
-                           ;; over seems like the best way to do this
-                           (defun org-subtree-in-new-file ()
-                             (interactive)
-                             (let ((timestamp (concat (number-to-string (cadr (current-time)))
-                                                      (number-to-string (caddr (current-time)))
-                                                      )))
-                               (org-copy-subtree)
-                               (find-file (concat "tmp-" timestamp ".org"))
-                               (yank)
-                               (delete-other-windows)
-                               )
-                             )
-
-
-
                            (define-key my-keys-minor-mode-map (kbd "C-j") 'org-meta-return)
 
 
                            ;; iterm remaps C-; to M-#
-                           (define-key my-keys-minor-mode-map (kbd "M-# c i") 'org-clock-in)
-                           (define-key my-keys-minor-mode-map (kbd "M-# c o") 'org-clock-out)
-                           (define-key my-keys-minor-mode-map (kbd "M-# c g") 'org-clock-goto)
-                           (define-key my-keys-minor-mode-map (kbd "M-# [") 'dwim-insert-checkbox-item)
-
                            (define-key my-keys-minor-mode-map (kbd "M-# b") 'org-backward-heading-same-level)
                            (define-key my-keys-minor-mode-map (kbd "M-# f") 'org-forward-heading-same-level)
                            (define-key my-keys-minor-mode-map (kbd "M-# u") 'outline-up-heading)
@@ -109,8 +86,6 @@
                            (define-key my-keys-minor-mode-map (kbd "M-# C-u") 'outline-up-heading)
                            (define-key my-keys-minor-mode-map (kbd "M-# C-p") 'outline-previous-visible-heading)
                            (define-key my-keys-minor-mode-map (kbd "M-# C-n") 'outline-next-visible-heading)
-
-                           (define-key my-keys-minor-mode-map (kbd "M-# !") 'org-subtree-in-new-file)
 
                            (define-key my-keys-minor-mode-map (kbd "M-# 1") (lambda () (interactive) (org-priority ?A)))
                            (define-key my-keys-minor-mode-map (kbd "M-# 2") (lambda () (interactive) (org-priority ?B)))
