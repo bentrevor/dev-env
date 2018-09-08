@@ -4,7 +4,3 @@ Vagrantfile
 boxes
 package.box
 *.swp
-
-emacs/auto-save-list
-emacs/elpa/archives
-emacs/projectile-bookmarks.eld

@@ -30,18 +30,19 @@
     ("magenta" . "magenta")
     ("brightmagenta" . "brightmagenta")
 
+    ("modelinebg" . "color-223")
+
     ;; normal colors
     ;; ("darkgray" . "color-235")
     ;; ("gray" . "color-238")
     ;; ("lightgray" . "color-240")
 
     ;; inverted colors
-    ("darkgray" . "color-252")
+    ("darkgray" . "color-251")
     ("gray" . "color-246")
     ("lightgray" . "color-242")
 
     ))
-
 (
  defmacro btcolor/with-color-variables (&rest body)
   "`let' bind all colors defined in `btcolor/colors-alist' around BODY.
@@ -54,45 +55,49 @@ Also bind `class' to ((class color) (min-colors 89))."
      ,@body))
 
 (btcolor/with-color-variables
- (custom-theme-set-faces
-  'btcolor
+  (custom-theme-set-faces
+   'btcolor
 
-  `(default ((t (:foreground ,white :background ,black))))
-  `(linum ((t (:foreground ,gray :background ,brightblack))))
-  `(region ((t (:background ,darkgray))))
+   `(default ((t (:foreground ,white :background ,black))))
+   `(linum ((t (:foreground ,gray :background ,brightblack))))
+   `(region ((t (:background ,darkgray))))
 
-  ;; match at cursor
-  `(isearch ((t (:background ,brightyellow :foreground ,black))))
-  ;; other matches
-  `(lazy-highlight ((t (:background ,green :foreground ,black :weight bold))))
+   ;; match at cursor
+   `(isearch ((t (:background ,brightyellow :foreground ,black))))
+   ;; other matches
+   `(lazy-highlight ((t (:background ,green :foreground ,black :weight bold))))
 
-  `(success ((t (:foreground ,green :weight bold))))
-  `(warning ((t (:foreground ,red :weight bold))))
+   `(success ((t (:foreground ,green :weight bold))))
+   `(warning ((t (:foreground ,red :weight bold))))
 
-  `(mode-line ((t (:background ,green :foreground ,black ))))
-  `(mode-line-inactive ((t (:background ,gray :foreground ,black ))))
-  `(mode-line-buffer-id ((t (:foreground ,brightblack :weight bold))))
-  `(minibuffer-prompt ((t (:foreground ,blue))))
+   `(mode-line ((t (:background ,darkgray :foreground ,lightgray ))))
+   `(mode-line-inactive ((t (:inherit linum))))
+   `(mode-line-buffer-id ((t (:foreground ,white :weight bold))))
+   `(minibuffer-prompt ((t (:foreground ,blue))))
 
-  `(font-lock-builtin-face ((t (:foreground ,brightblue))))
-  `(font-lock-comment-delimiter-face ((t (:foreground ,gray))))
-  `(font-lock-comment-face ((t (:foreground ,gray))))
-  `(font-lock-constant-face ((t (:foreground ,yellow))))
-  `(font-lock-function-name-face ((t (:foreground ,red))))
-  `(font-lock-keyword-face ((t (:foreground ,blue))))
-  `(font-lock-negation-char-face ((t (:foreground ,red))))
-  `(font-lock-string-face ((t (:foreground ,yellow))))
-  `(font-lock-type-face ((t (:foreground ,green))))
-  `(font-lock-variable-name-face ((t (:foreground ,magenta))))
+   `(font-lock-builtin-face ((t (:foreground ,brightblue))))
+   `(font-lock-comment-delimiter-face ((t (:foreground ,gray))))
+   `(font-lock-comment-face ((t (:foreground ,gray))))
+   `(font-lock-constant-face ((t (:foreground ,magenta))))
+   `(font-lock-function-name-face ((t (:foreground ,red))))
+   `(font-lock-keyword-face ((t (:foreground ,blue))))
+   `(font-lock-negation-char-face ((t (:foreground ,red))))
+   `(font-lock-string-face ((t (:foreground ,yellow))))
+   `(font-lock-type-face ((t (:foreground ,green))))
+   `(font-lock-variable-name-face ((t (:foreground ,cyan))))
 
-  `(helm-selection ((t (:background ,gray :weight bold))))
-  `(helm-source-header ((t (:background ,red :weight bold))))
+   `(helm-selection ((t (:background ,gray :weight bold))))
+   `(helm-source-header ((t (:background ,blue :weight bold))))
+   `(helm-match ((t (:foreground ,brightmagenta :weight bold))))
 
-  `(diff-removed ((t (:background ,red :foreground ,black))))
-  `(diff-added ((t (:background ,green :foreground ,black))))
 
-  `(diff-refine-removed ((t (:background ,brightred :foreground ,black))))
-  `(diff-refine-added ((t (:background ,brightgreen :foreground ,black))))
+   ;; other sections
+   `(diff-removed ((t (:foreground ,red))))
+   `(diff-added ((t (:foreground ,green))))
+
+   ;; current section
+   `(diff-refine-removed ((t (:foreground ,brightred :background ,darkgray))))
+   `(diff-refine-added ((t (:foreground ,brightgreen :background ,darkgray))))
 
 
 ;;;;; magit
@@ -109,10 +114,11 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(magit-diff-file-heading           ((t (:weight bold))))
    `(magit-diff-file-heading-highlight ((t (:background ,darkgray :weight bold))))
    ;; `(magit-diff-file-heading-selection ((t (:background ,green :foreground ,cyan :weight bold))))
-   `(magit-diff-hunk-heading-highlight ((t (:background ,cyan :foreground ,black))))
-   `(magit-diff-hunk-heading           ((t (:background ,darkgray :foreground ,cyan))))
-   `(magit-diff-hunk-heading-selection ((t (:background ,brightmagenta :foreground ,cyan))))
-   `(magit-diff-lines-heading          ((t (:background ,cyan :foreground ,gray))))
+   ;; current section
+   `(magit-diff-hunk-heading-highlight ((t (:background ,darkgray :foreground ,brightcyan))))
+   `(magit-diff-hunk-heading           ((t (:foreground ,cyan))))
+                                        ; `(magit-diff-hunk-heading-selection ((t (:background ,brightmagenta :foreground ,cyan))))
+   `(magit-diff-lines-heading          ((t (:foreground ,cyan))))
    `(magit-diff-context-highlight      ((t (:background ,darkgray))))
 
    `(magit-diffstat-added   ((t (:foreground ,green))))
@@ -121,7 +127,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(magit-popup-heading             ((t (:foreground ,yellow  :weight bold))))
    `(magit-popup-key                 ((t (:foreground ,brightgreen :weight bold))))
    `(magit-popup-argument            ((t (:foreground ,green   :weight bold))))
-   `(magit-popup-disabled-argument   ((t (:foreground ,darkgray    :weight normal))))
+   `(magit-popup-disabled-argument   ((t (:foreground ,lightgray    :weight normal))))
    `(magit-popup-option-value        ((t (:foreground ,blue  :weight bold))))
 ;;;;;; process
    `(magit-process-ok    ((t (:foreground ,green  :weight bold))))
@@ -177,16 +183,27 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(magit-reflog-remote       ((t (:foreground ,cyan))))
    `(magit-reflog-other ((t (:foreground ,cyan))))
 
-  `(outline-1 ((t (:foreground ,red))))
-  `(outline-2 ((t (:foreground ,green))))
-  `(outline-3 ((t (:foreground ,magenta))))
-  `(outline-4 ((t (:foreground ,blue))))
-  `(outline-5 ((t (:foreground ,brightred))))
-  `(outline-6 ((t (:foreground ,brightgreen))))
-  `(outline-7 ((t (:foreground ,brightmagenta))))
-  `(outline-8 ((t (:foreground ,brightblue))))
+;;;;; org-mode
+   `(outline-1 ((t (:foreground ,red))))
+   `(outline-2 ((t (:foreground ,green))))
+   `(outline-3 ((t (:foreground ,magenta))))
+   `(outline-4 ((t (:foreground ,blue))))
+   `(outline-5 ((t (:inherit outline-1))))
+   `(outline-6 ((t (:inherit outline-2))))
+   `(outline-7 ((t (:inherit outline-3))))
+   `(outline-8 ((t (:inherit outline-4))))
 
+   `(org-checkbox ((t (:foreground ,brightblue :weight bold))))
+   `(org-date ((t (:foreground ,brightmagenta))))
+   `(org-done ((t (:weight bold :foreground ,brightgreen))))
+   ;; `(org-headline-done ((t (:foreground ,zenburn-green+3))))
+   ;; `(org-hide ((t (:foreground ,zenburn-bg-1))))
+   `(org-link ((t (:foreground ,brightcyan))))
+   `(org-table ((t (:foreground ,brightcyan))))
+   `(org-tag ((t (:weight bold))))
+   `(org-todo ((t (:weight bold :foreground ,brightred))))
+   `(org-warning ((t (:weight bold :foreground ,brightred))))
 
-  ))
+   ))
 
 (provide-theme 'btcolor)

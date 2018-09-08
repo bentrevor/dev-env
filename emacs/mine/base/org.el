@@ -3,7 +3,11 @@
 (setq bt/org-dir "~/shared/org/")
 (defun bt/org-path (x) (concat bt/org-dir x))
 
-(setq org-agenda-files (bt/org-path "todo.org"))
+(setq org-agenda-files (list (bt/org-path "todo.org")
+                             (bt/org-path "projects.org")
+                             ))
+;; (setq org-agenda-files '())
+
 (setq org-archive-location (bt/org-path "archives/archive.%s::"))
 
 (setq org-startup-indented t)      ;; indent tasks and only show one star

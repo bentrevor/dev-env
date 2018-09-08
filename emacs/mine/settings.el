@@ -1,23 +1,42 @@
-;;(add-to-list 'package-archives       '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(add-to-list 'auto-mode-alist        '("\\.rb$" . ruby-mode))
-(add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
-(define-key isearch-mode-map [(control h)] 'isearch-delete-char) ;; C-h to delete while searching
+(require 'package)
+(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(package-initialize)
 
-;; colors
+(add-to-list 'custom-theme-load-path "~/.emacs.d/mine/theme/")
 (load-theme 'btcolor t)
-;; (load-theme 'light-soap t)
-;; (set-face-attribute 'fringe nil :background "#FFF")
+
+(defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
+
+(define-minor-mode my-keys-minor-mode
+  "minor mode with all my keys"
+  t " my-keys" 'my-keys-minor-mode-map)
+(my-keys-minor-mode 1)
+;; make my minor mode the most important minor mode
+(defadvice load (after give-my-keybindings-priority)
+  "Try to ensure that my keybindings always have priority."
+  (if (not (eq (car (car minor-mode-map-alist)) 'my-keys-minor-mode))
+      (let ((mykeys (assq 'my-keys-minor-mode minor-mode-map-alist)))
+        (assq-delete-all 'my-keys-minor-mode minor-mode-map-alist)
+        (add-to-list 'minor-mode-map-alist mykeys))))
+(ad-activate 'load)
+
+;; FIXME make this replace all in str, currently this won't work for prefix keys
+(defun bt/kbd (vt)
+  ;; iterm remaps vt102 control codes and some other things
+  (cond
+   ((string-equal vt "C-;") (kbd "C-\\"))
+   ((string-equal vt "C-'") (kbd "M-'"))
+   ((string-equal vt "C-/") (kbd "C-_"))
+   ((string-equal vt "C-,") (kbd "C-]"))
+   ((string-equal vt "C-.") (kbd "C-^"))
+   ((string-equal vt "C-w") (kbd "C-M-h"))
+   ))
 
 (setq ag-highlight-search t)
-
-;; line number options
-;; (global-linum-mode t)
 (setq linum-format "%4d│")
-(setq left-fringe 6)
-
+;; FIXME don't put all linum modes in one place
 (add-hook 'haskell-mode-hook #'linum-mode)
 (add-hook 'ruby-mode-hook #'linum-mode)
-(add-hook 'paredit-mode-hook #'linum-mode)
 (add-hook 'sh-mode-hook #'linum-mode)
 (add-hook 'markdown-mode-hook #'linum-mode)
 (add-hook 'js-mode-hook #'linum-mode)
@@ -26,8 +45,6 @@
 (add-hook 'elm-mode-hook #'linum-mode)
 (add-hook 'lisp-mode-hook #'linum-mode)
 (add-hook 'emacs-lisp-mode-hook #'linum-mode)
-
-
 
 (setq ruby-insert-encoding-magic-comment nil)
 (setq x-select-enable-clipboard            t
@@ -60,128 +77,3 @@
 (setq require-final-newline nil)                        ;; don't add newline at end of file
 (setq elm-format-on-save t)
 
-;; format for vertical borders
-(set-display-table-slot standard-display-table
-                        'vertical-border
-                        (make-glyph-code ?║))
-
-
-;;;;;;;;;;;;;;;
-;;
-;; global hooks
-;;
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-;; (add-hook 'before-save-hook 'run-rubocop)
-(add-hook 'prog-mode-hook 'highlight-numbers-mode)
-;; (add-hook 'prog-mode-hook 'highlight-escape-sequences)
-
-;;;;;;;;;;;;;
-;;
-;; mode hooks
-;;
-(add-hook 'clojure-mode-hook
-          (lambda ()
-            (put-clojure-indent 'describe 'defun)
-            (put-clojure-indent 'it       'defun)
-            (put-clojure-indent 'with     'defun)))
-
-(add-hook 'haskell-mode-hook 'haskell-indentation-mode)
-
-(add-hook 'erc-mode-hook '(lambda () (setq scroll-conservatively 100)))
-
-(add-hook 'go-mode-hook
-          (lambda ()
-            (setq gofmt-command "goimports")  ;; use goimports instead of go-fmt
-            (add-hook 'before-save-hook 'gofmt-before-save)))
-
-(setq elm-format-on-save t)
-
-(add-hook 'markdown-mode-hook
-          (lambda ()
-            (remove-hook 'before-save-hook 'delete-trailing-whitespace)))
-
-(autoload 'zap-up-to-char "misc" "like 't' in vim" 'interactive)
-(autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
-
-(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.gemspec$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("\\.ru$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Guardfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
-(add-to-list 'auto-mode-alist '("Rubbishfile$" . ruby-mode))
-
-(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
-(setq web-mode-markup-indent-offset 2) ;; html indent
-(setq web-mode-code-indent-offset 2) ;; js indent
-
-(add-to-list 'auto-mode-alist '("zshenv" . shell-script-mode))
-(add-to-list 'auto-mode-alist '("zshrc" . shell-script-mode))
-(add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
-
-(require 'projectile)
-
-(projectile-global-mode) ;; like command-t
-
-(require 'helm-config)
-(helm-mode 1)
-
-(require 'helm-projectile)
-(helm-projectile-on)
-
-(setq projectile-globally-ignored-directories '(
-                                                "node_modules"
-                                                "tmp"
-                                                "vendor"
-                                                "elpa"
-                                                ))
-
-;; So that helm does not use current window to display the helm window
-(setq helm-split-window-in-side-p t)
-
-;; make helm always open at the bottom
-(add-to-list 'display-buffer-alist
-             `(,(rx bos "*helm" (* not-newline) "*" eos)
-               (display-buffer-in-side-window)
-               (inhibit-same-window . t)
-               (window-height . 0.4)))
-
-(font-lock-add-keywords 'javascript-mode
-                        '(("Math" . font-lock-type-face)
-                          ("Number" . font-lock-type-face)
-                          ("Date" . font-lock-type-face)
-                          ("String" . font-lock-type-face)
-                          ("RegExp" . font-lock-type-face)
-                          ("Array" . font-lock-type-face)
-                          ("JSON" . font-lock-type-face)
-                          ("Object" . font-lock-type-face)
-                          ))
-
-(menu-bar-mode -1)
-(when (fboundp 'tool-bar-mode)
-  (tool-bar-mode -1))
-(when (fboundp 'scroll-bar-mode)
-  (scroll-bar-mode -1))
-
-(require 'expand-region)
-(global-set-key (kbd "M-s i") 'er/expand-region)
-(global-set-key (kbd "M-s M-i") 'er/expand-region)
-
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
-
-(require 'saveplace)
-(setq-default save-place t)
-
-(require 'whole-line-or-region)
-(whole-line-or-region-mode)
-
-;; for easy keybindings with single-key repeats
-(require 'smartrep)
-
-(setq ibuffer-formats
-      '((mark modified read-only " "
-              (name 30 30 :left :elide) " "
-              (mode 6 6 :left :elide) " " filename-and-process)
-        (mark " " (name 16 -1) " " filename)))
