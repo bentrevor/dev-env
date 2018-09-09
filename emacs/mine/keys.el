@@ -92,6 +92,11 @@
 (define-key my-keys-minor-mode-map (kbd "M-; e d") 'dired-jump)
 (define-key my-keys-minor-mode-map (kbd "M-; e f") 'find-file)
 
+(define-key my-keys-minor-mode-map (kbd "M-; s s")     'replace-string)
+(define-key my-keys-minor-mode-map (kbd "M-; s r")     'replace-regexp)
+(define-key my-keys-minor-mode-map (kbd "M-; s q s")   'query-replace)
+(define-key my-keys-minor-mode-map (kbd "M-; s q r")   'query-replace-regexp)
+
 (defun bt/pbcopy ()
   (interactive)
   (shell-command-on-region (region-beginning) (region-end) "pbcopy")

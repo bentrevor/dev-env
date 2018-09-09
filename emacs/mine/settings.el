@@ -32,6 +32,10 @@
    ((string-equal vt "C-w") (kbd "C-M-h"))
    ))
 
+(set-display-table-slot standard-display-table
+                        'vertical-border
+                        (make-glyph-code ?║))
+
 (setq ag-highlight-search t)
 (setq linum-format "%4d│")
 ;; FIXME don't put all linum modes in one place
@@ -77,3 +81,9 @@
 (setq require-final-newline nil)                        ;; don't add newline at end of file
 (setq elm-format-on-save t)
 
+(setq initial-major-mode 'text-mode) ;; FIXME set to org-mode (once I fix org-mode's load time)
+(setq inhibit-startup-screen t)
+(setq initial-scratch-message
+      (concat "\
+# " (replace-regexp-in-string " (.*\n.*" "" (emacs-version)) "\n\n"
+  ))

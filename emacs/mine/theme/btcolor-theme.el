@@ -33,14 +33,14 @@
     ("modelinebg" . "color-223")
 
     ;; normal colors
-    ;; ("darkgray" . "color-235")
-    ;; ("gray" . "color-238")
-    ;; ("lightgray" . "color-240")
+    ("darkgray" . "color-235")
+    ("gray" . "color-238")
+    ("lightgray" . "color-240")
 
     ;; inverted colors
-    ("darkgray" . "color-251")
-    ("gray" . "color-246")
-    ("lightgray" . "color-242")
+    ;; ("darkgray" . "color-251")
+    ;; ("gray" . "color-246")
+    ;; ("lightgray" . "color-242")
 
     ))
 (
@@ -59,7 +59,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    'btcolor
 
    `(default ((t (:foreground ,white :background ,black))))
-   `(linum ((t (:foreground ,gray :background ,brightblack))))
+   `(linum ((t (:foreground ,lightgray :background ,darkgray))))
    `(region ((t (:background ,darkgray))))
 
    ;; match at cursor
@@ -70,7 +70,8 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(success ((t (:foreground ,green :weight bold))))
    `(warning ((t (:foreground ,red :weight bold))))
 
-   `(mode-line ((t (:background ,darkgray :foreground ,lightgray ))))
+   `(mode-line ((t (:background ,green :foreground ,brightblack ))))
+   ;; `(mode-line-inactive ((t (:background ,gray :foreground ,white ))))
    `(mode-line-inactive ((t (:inherit linum))))
    `(mode-line-buffer-id ((t (:foreground ,white :weight bold))))
    `(minibuffer-prompt ((t (:foreground ,blue))))
