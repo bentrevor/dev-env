@@ -113,7 +113,7 @@ static char *gnus-pointer[] = {
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(package-selected-packages
    (quote
-    (rbit zenburn-theme epl rainbow-mode dockerfile-mode yaml-mode web-mode elm-mode org haskell-mode badger-theme whole-line-or-region smartrep magit highlight-numbers helm-projectile expand-region)))
+    (ripgrep tuareg rbit zenburn-theme epl rainbow-mode dockerfile-mode yaml-mode web-mode elm-mode org haskell-mode badger-theme whole-line-or-region smartrep magit highlight-numbers helm-projectile expand-region)))
  '(pdf-view-midnight-colors (quote ("#232333" . "#c7c7c7")))
  '(pos-tip-background-color "#A6E22E")
  '(pos-tip-foreground-color "#272822")

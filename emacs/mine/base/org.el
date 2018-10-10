@@ -6,7 +6,21 @@
 (setq org-agenda-files (list (bt/org-path "todo.org")
                              (bt/org-path "projects.org")
                              ))
-;; (setq org-agenda-files '())
+
+
+(setq org-todo-keywords
+      '((sequence
+         "TODO(o)"
+         "[_]"
+         "BLOCKED"
+
+         "|"
+
+         "DONE"
+         "[X]"
+         "SKIP"
+         )))
+
 
 (setq org-archive-location (bt/org-path "archives/archive.%s::"))
 
@@ -42,6 +56,10 @@
                              (beginning-of-line)
                              (search-forward " ")
                              )
+
+                           (define-key my-keys-minor-mode-map (kbd "M-# C-t") (lambda () (interactive) (org-todo "[_]")))
+                           (define-key my-keys-minor-mode-map (kbd "M-# C-d") (lambda () (interactive) (org-todo "[X]")))
+                           (define-key my-keys-minor-mode-map (kbd "M-# C-SPC") (lambda () (interactive) (org-todo "")))
 
                            (define-key my-keys-minor-mode-map (kbd "M-# C-j") 'org-meta-return)
                            (define-key my-keys-minor-mode-map (kbd "C-j") 'org-meta-return)

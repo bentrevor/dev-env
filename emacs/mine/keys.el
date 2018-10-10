@@ -4,7 +4,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-s") 'isearch-forward-regexp)
 (define-key my-keys-minor-mode-map (kbd "C-r") 'isearch-backward-regexp)
 (define-key my-keys-minor-mode-map (kbd "C-h") 'delete-backward-char)
-(define-key isearch-mode-map (bt/kbd "C-w") 'isearch-yank-word-or-char) ;; FIXME 
+(define-key isearch-mode-map (bt/kbd "C-w") 'isearch-yank-word-or-char) ;; FIXME
 
 (define-key my-keys-minor-mode-map (bt/kbd "C-w") 'backward-kill-word)
 
@@ -40,6 +40,8 @@
 (define-key my-keys-minor-mode-map (kbd "ESC M-x") 'execute-extended-command) ;; original M-x
 
 (define-key key-translation-map (kbd "M-; h") [f1])
+
+(define-key my-keys-minor-mode-map (kbd "M-; M-;") 'goto-line)
 
 (define-key my-keys-minor-mode-map (kbd "M-a") 'back-to-indentation)
 (define-key my-keys-minor-mode-map (kbd "M-e") 'move-end-of-line)
@@ -208,7 +210,7 @@ F5 again will unset 'selective-display' by setting it to 0."
 
 (define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)
 (define-key my-keys-minor-mode-map (kbd "C-M-f") 'so/set-selective-display-dlw)
-(define-key my-keys-minor-mode-map (kbd "C-M-u") '(lambda () (interactive) (so/set-selective-display 0)))
+(define-key my-keys-minor-mode-map (kbd "C-M-u") '(lambda () (interactive) (so/set-selective-display-dlw 0)))
 
 ;;; ag
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

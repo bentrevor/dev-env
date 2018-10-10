@@ -33,9 +33,11 @@
     ("modelinebg" . "color-223")
 
     ;; normal colors
-    ("darkgray" . "color-235")
-    ("gray" . "color-238")
-    ("lightgray" . "color-240")
+
+
+    ("darkgray" . (if (getenv "INVERSE_TERMINAL") "color-251" "color-235"))
+    ("gray" . (if (getenv "INVERSE_TERMINAL") "color-246" "color-238"))
+    ("lightgray" . (if (getenv "INVERSE_TERMINAL") "color-242" "color-240"))
 
     ;; inverted colors
     ;; ("darkgray" . "color-251")
@@ -85,7 +87,7 @@ Also bind `class' to ((class color) (min-colors 89))."
    `(font-lock-negation-char-face ((t (:foreground ,red))))
    `(font-lock-string-face ((t (:foreground ,yellow))))
    `(font-lock-type-face ((t (:foreground ,green))))
-   `(font-lock-variable-name-face ((t (:foreground ,cyan))))
+   `(font-lock-variable-name-face ((t (:foreground ,red))))
 
    `(helm-selection ((t (:background ,gray :weight bold))))
    `(helm-source-header ((t (:background ,blue :weight bold))))
@@ -196,14 +198,19 @@ Also bind `class' to ((class color) (min-colors 89))."
 
    `(org-checkbox ((t (:foreground ,brightblue :weight bold))))
    `(org-date ((t (:foreground ,brightmagenta))))
-   `(org-done ((t (:weight bold :foreground ,brightgreen))))
    ;; `(org-headline-done ((t (:foreground ,zenburn-green+3))))
    ;; `(org-hide ((t (:foreground ,zenburn-bg-1))))
    `(org-link ((t (:foreground ,brightcyan))))
    `(org-table ((t (:foreground ,brightcyan))))
    `(org-tag ((t (:weight bold))))
-   `(org-todo ((t (:weight bold :foreground ,brightred))))
+
+   `(org-done ((t (:weight bold :foreground ,brightblack :background ,brightgreen))))
+   `(org-todo ((t (:weight bold :foreground ,brightblack :background ,brightred))))
+
    `(org-warning ((t (:weight bold :foreground ,brightred))))
+
+   `(tuareg-font-lock-governing-face ((t (:foreground ,blue))))
+   `(tuareg-font-lock-operator-face ((t (:foreground ,blue))))
 
    ))
 

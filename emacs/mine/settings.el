@@ -36,7 +36,7 @@
                         'vertical-border
                         (make-glyph-code ?║))
 
-(setq ag-highlight-search t)
+;; (setq ag-highlight-search t)
 (setq linum-format "%4d│")
 ;; FIXME don't put all linum modes in one place
 (add-hook 'haskell-mode-hook #'linum-mode)
@@ -49,6 +49,9 @@
 (add-hook 'elm-mode-hook #'linum-mode)
 (add-hook 'lisp-mode-hook #'linum-mode)
 (add-hook 'emacs-lisp-mode-hook #'linum-mode)
+(add-hook 'tuareg-mode-hook #'linum-mode)
+
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
 
 (setq ruby-insert-encoding-magic-comment nil)
 (setq x-select-enable-clipboard            t

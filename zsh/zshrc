@@ -151,7 +151,8 @@ alias tmux='tmux -2' # let tmux use 256 colors
 alias l='ls -lhpG'
 # alias emacs='emacs-snapshot '
 alias e='emacs'
-alias t='tree -C --dirsfirst -I "coverage|build|dist|*srv|elm-stuff" '
+alias ei='INVERSE_TERMINAL=1 emacs' # emacs inverse
+alias t='tree -C --dirsfirst -I "coverage|build|dist|*srv|elm-stuff|_build|*.byte|*.native" '
 alias t2='t -L 2'
 alias be='bundle exec'
 alias v='vagrant'
@@ -252,3 +253,6 @@ function pss() {
     local process_names=$(echo $@ | sed 's/ /\\|/g')
     ps aux | grep -v grep | grep "$process_names"
 }
+
+# opam configuration
+test -r /home/vagrant/.opam/opam-init/init.zsh && . /home/vagrant/.opam/opam-init/init.zsh > /dev/null 2> /dev/null || true
